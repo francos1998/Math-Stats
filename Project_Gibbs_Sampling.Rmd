@@ -4,6 +4,10 @@ author: "Ty Bruckner and Franco Salinas"
 output: pdf_document
 bibliography: Library.bib  
 ---
+```{r}
+library(rstan)
+library(bayesplot)
+```
 
 
 # Markov Chains Monte Carlo (MCMC)
@@ -14,11 +18,53 @@ We can say that the (i+1)st chain value $\theta^{(i+1)}$ has a conditional pdf $
 
 $$f(\theta^{(i+1)}|\theta^{(i)}, y)\ne f(\theta^{(i+1)}| y)$$
 
-We will conduct the MCMC simulation using the rstan package [@rstan]. There are two essential steps to all rstan analyses, first we define the Bayesian model structure and then simulate the posterior.
+We will conduct the MCMC simulation using the rstan package [@rstan]. There are two essential steps to all rstan analyses, first we define the Bayesian model structure and then simulate the posterior.We will use a Beta-Binomial example. 
 
+###STEP 1: DEFINE the model
 
+Data: Y is the observed number of success trials. We specify that Y is between 10 and 0. 
+Parameters: The model depends on pi, therefore we must specify that pi can be any real number from 0 to
+Model: We need to specify the model for the data and the model for the prior.
 
+```{r}
+# STEP 1: DEFINE the model
+bb_model <- "
+  data {
+    int<lower = 0, upper = 10> Y;
+  }
+  parameters {
+    real<lower = 0, upper = 1> pi;
+  }
+  model {
+    Y ~ binomial(10, pi);
+    pi ~ beta(2, 2);
+  }
+"
+```
 
+# STEP 2: Simulate the posterior
+
+We simulate the posterior using the stan() function. This function designs and runs an MCMC algorithm to produce an approximate sample from the Beta-Binomial posterior. The model code argument requires a string that defines the model. The data argument requires a list of observed data. The chains argument specifies how many parallel Markov Chains we are running. Since we are running four chains we will have four $\pi$ values. The iter argument specifies the number of iterations or length for each chain. The first half of this iterations are thrown out as "burn in" samples. To keep our random results constant we utilize the seed argument within the stan() function. 
+
+```{r}
+
+bb_sim <- stan(model_code = bb_model, data = list(Y = 9), 
+               chains = 4, iter = 5000*2, seed = 84735)
+```
+
+As you can see in Figure 1, when observing the distribution of the sampled $\pi$ values we approximate the target Beta(11,3) posterior model of $\pi$. The target pdf is superimposed in black. [@ADDALICIASBOOK]
+
+```{r}
+# Histogram of the Markov chain values
+mcmc_hist(bb_sim, pars = "pi") + 
+  yaxis_text(TRUE) + 
+  ylab("count")
+
+# Density plot of the Markov chain values
+mcmc_dens(bb_sim, pars = "pi") + 
+  yaxis_text(TRUE) + 
+  ylab("density")
+```
 
 # Metropolis-Hastings algorith
 
