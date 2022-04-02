@@ -1,0 +1,205 @@
+---
+title: "Gibbs_Sampling_Activity"
+author: "Ty Bruckner and Franco Salinas"
+output: pdf_document
+---
+
+# Gibbs Sampling
+
+Now suppose we have data from a normal distribution where both the mean **and** variance are unknown. For convenience, we'll parameterize this model in terms of the *precision* $\gamma = \frac{1}{\sigma^2}$ instead of the variance $\sigma^2$. 
+
+$$Y \mid \mu, \gamma \sim N\left(\mu, \frac{1}{\gamma}\right)$$
+
+Suppose we put the following *independent* priors on the mean $\mu$ and precision $\gamma$:
+
+$$\mu \sim N(m, v)$$
+
+$$\gamma \sim \text{Gamma}(a,b)$$
+
+1. Write down the joint posterior distribution for $\mu, \gamma$. Does this look like a recognizable probability distribution?
+
+**ANSWER:** No, this is not a recognizable posterior:
+
+$$
+\begin{aligned}
+g(\mu,\gamma \mid y) & \propto f(y \mid \mu, \gamma) f(\mu, \gamma) \\
+& = f(y \mid \mu, \gamma) f(\mu) f(\gamma), \text{ since } \mu, \gamma \text{ independent} \\
+& = \left[(2\pi)^{-\frac{1}{2}}\gamma^{\frac{1}{2}}e^{-\frac{1}{2}\gamma(y - \mu)^2} \right] \left[(2\pi v)^{-\frac{1}{2}}e^{-\frac{1}{2v}(\mu - m)^2} \right]\left[\frac{b^a}{\Gamma(a)} \gamma^{a-1}e^{-b\gamma}\right]\\
+& \propto \gamma^{\frac{1}{2}}e^{-\frac{1}{2}\gamma(y - \mu)^2}e^{-\frac{1}{2v}(\mu - m)^2}\gamma^{a-1}e^{-b\gamma}\\
+& =\gamma^{\frac{1}{2} + a - 1}e^{-\frac{1}{2}\gamma(y - \mu)^2 + -\frac{1}{2v}(\mu - m)^2 -b\gamma} \\
+& = \gamma^{\frac{1}{2} + a - 1}e^{-\frac{1}{2}\left[\gamma(y - \mu)^2 + \frac{1}{v}(\mu - m)^2 + 2b\gamma\right]} \\
+& = \gamma^{\frac{1}{2} + a - 1}e^{-\frac{1}{2}\left[\gamma y^2 - 2\mu y \gamma + \gamma \mu^2 + \mu^2 / v - 2m \mu / v + m^2 / v + 2 b \gamma\right]} \\
+& = \gamma^{\frac{1}{2} + a - 1}e^{-\frac{1}{2}\left[\gamma (y^2 + 2b) - 2\mu (y \gamma + m/v) + \mu^2(\gamma  + 1 / v)  + m^2 / v \right]} \\
+& \propto \gamma^{\frac{1}{2}+a-1}e^{-\frac{1}{2}\left[\gamma(y^2 + 2b) - 2\mu(y\gamma + \frac{m}{v}) + \mu^2(\frac{1}{v}+ \gamma) \right]} \\
+\end{aligned}
+$$
+
+
+You should have answered "no" to Question 1, meaning that we can't use our usual techniques here to find Bayes estimators for $\mu$ or $\gamma$ since we don't have a recognizable posterior distribution. Instead, we'll use a computational technique known as *Gibbs Sampling* to generate samples from this posterior distribution. Gibbs Sampling is particularly useful when we have more than one parameter, and the basic idea involves reducing our problem to a series of calculations involving one parameter at a time. In order to perform Gibbs Sampling, we need to find the conditional distributions $$g(\mu \mid y, \gamma) \propto f(y \mid \mu, \gamma)f(\mu)$$ $$g(\gamma \mid y, \mu) \propto f(y \mid \mu,\gamma)f(\gamma)$$ We will use these conditional distributions to sample from the joint posterior $g(\mu, \gamma \mid y)$ according to the following algorithm:
+
+> (1) Start with initial values $\mu^{(0)}, \gamma^{(0)}$.
+
+> (2) Sample $\mu^{(t+1)} \sim g(\mu \mid y, \gamma = \gamma^{(t)})$.
+
+> (3) Sample $\gamma^{(t+1)} \sim g(\gamma \mid y, \mu = \mu^{(t+1)})$.
+
+> (4) Repeat many times.
+
+It turns out that the resulting $\mu^{(0)}, \mu^{(1)}, \dots, \mu^{(N)}$ and $\gamma^{(0)}, \gamma^{(1)}, \dots, \gamma^{(N)}$ are samples from the joint posterior distribution $g(\mu, \gamma \mid Y)$, and we can use these sampled values to estimate quantities such as the posterior mean of each parameter $\hat{E}(\mu \mid y) = \frac{1}{N}\sum_{i=1}^N \mu^{(i)}, \ \ \hat{E}(\gamma \mid y) = \frac{1}{N}\sum_{i=1}^N \gamma^{(i)}$. Note that in practice we typically remove the initial iterations, known as the "burn-in" period: e.g., $\hat{E}(\mu \mid y) = \frac{1}{N-B}\sum_{i=B}^N \mu^{(i)}$.
+
+2. Show that the conditional distributions $g(\mu \mid y, \gamma), g(\gamma \mid y, \mu)$ are proportional to $f(y \mid \mu, \gamma)f(\mu), f(y \mid \mu,\gamma)f(\gamma)$, respectively, as stated above.
+
+**ANSWER:**
+
+$$
+\begin{aligned}
+g(\mu \mid y, \gamma) &= \frac{f(\mu, y, \gamma)}{f(y, \gamma)} \\
+& \propto f(\mu, y, \gamma), \text{ since } f(y, \gamma) \text{ doesn't depend on } \mu \\
+& = f(y \mid \mu, \gamma) f(\mu, \gamma) \\
+& = f(y \mid \mu, \gamma) f(\mu) f(\gamma), \text{ since } \mu, \gamma \text{ independent} \\
+& \propto f(y \mid \mu, \gamma) f(\mu), \text{ since} f(\gamma) \text{ doesn't depend on } \mu
+\end{aligned}
+$$
+
+A similar argument can be used to show $g(\gamma \mid y, \mu) \propto f(y | \mu, \gamma) f(\gamma)$.
+
+
+
+3. Use this result to show that $\mu \mid y, \gamma \sim N\left(\frac{y\gamma + \frac{m}{v}}{\gamma + \frac{1}{v}}, \left[\gamma + \frac{1}{v} \right]^{-1}\right)$ and $\gamma \mid y, \mu \sim \text{Gamma}\left(\frac{1}{2} + a, \frac{1}{2}(y-\mu)^2 + b\right)$.
+
+**ANSWER:**
+
+$$
+\begin{aligned}
+g(\mu \mid y, \gamma) &\propto f(y \mid \mu, \gamma)f(\mu) \\
+&= \left[(2\pi)^{-\frac{1}{2}}\gamma^{\frac{1}{2}}e^{-\frac{1}{2}\gamma(y - \mu)^2} \right] \left[(2\pi v)^{-\frac{1}{2}}e^{-\frac{1}{2v}(\mu - m)^2} \right]\\
+& \propto e^{-\frac{1}{2}\gamma(y - \mu)^2 -\frac{1}{2v}(\mu - m)^2} \\
+& = e^{-\frac{1}{2}\gamma(y^2 - 2\mu y + \mu^2) -\frac{1}{2v}(\mu^2 - 2\mu m + m^2)} \\
+& \propto e^{-\frac{1}{2}\gamma(- 2\mu y + \mu^2) -\frac{1}{2v}(\mu^2 - 2\mu m)} \\
+& = e^{-\frac{1}{2}\left[\mu^2(\gamma + \frac{1}{v}) - 2\mu(y \gamma + \frac{m}{v})  \right]} \\
+& = e^{-\frac{1}{2}(\gamma + \frac{1}{v})\left[\mu^2 - 2\mu \left(\frac{y \gamma + \frac{m}{v}}{\gamma + \frac{1}{v}}\right)  \right]} \\
+& \propto e^{-\frac{1}{2}(\gamma + \frac{1}{v})\left[\mu^2 - 2\mu\left(\frac{y \gamma + \frac{m}{v}}{\gamma + \frac{1}{v}}\right) + \left(\frac{y \gamma + \frac{m}{v}}{\gamma + \frac{1}{v}}\right)^2 \right]} \\
+& = \propto e^{-\frac{1}{2\left(\gamma + \frac{1}{v}\right)^{-1}}\left[ \mu - \left(\frac{y \gamma + \frac{m}{v}}{\gamma + \frac{1}{v}}\right) \right]^2}
+\end{aligned}$$
+
+$$\implies \mu \mid y, \gamma \sim N\left(\frac{y\gamma + \frac{m}{v}}{\gamma + \frac{1}{v}}, \left[\gamma + \frac{1}{v} \right]^{-1}\right)$$
+
+
+
+$$
+\begin{aligned}
+g(\gamma \mid y, \mu) &\propto f(y \mid \mu, \gamma)f(\gamma) \\
+& = \left[(2\pi)^{-\frac{1}{2}}\gamma^{\frac{1}{2}}e^{-\frac{1}{2}\gamma(y - \mu)^2} \right] \left[\frac{b^a}{\Gamma(a)} \gamma^{a-1}e^{-b\gamma}\right]\\
+& \propto \gamma^{\frac{1}{2}}\gamma^{a-1}e^{-\frac{1}{2}\gamma(y - \mu)^2}e^{-b\gamma} \\
+& = \gamma^{\frac{1}{2} + a - 1}e^{-\frac{1}{2}\gamma(y - \mu)^2 -b\gamma} \\
+& = \gamma^{\frac{1}{2} + a - 1}e^{-\gamma\left(\frac{1}{2}(y - \mu)^2 +b\right)} 
+\end{aligned}$$
+
+
+$$\implies \gamma \mid y, \mu \sim \text{Gamma}\left(\frac{1}{2} + a, \frac{1}{2}(y-\mu)^2 + b\right)$$
+
+4. Suppose that we choose the following hyperparameters for our prior distributions---$m = 0, v = 1, a = 1, b = 1$---and that we observe $y = 2$. Write code to implement this Gibbs Sampler.
+
+**ANSWER:** 
+
+```{r gibbs-setup, echo = T}
+# set up priors
+m <- 0
+v <- 1
+a <- 1
+b <- 1
+
+# set up data
+y <- 2
+
+# choose starting values by randomly sampling from our priors
+# (this is just one possible way to choose starting values)
+# (it's also useful to try out a few different starting values)
+set.seed(1)
+mu <- rnorm(1, mean = m, sd = sqrt(v))
+gam <- rgamma(1, shape = a, rate = b)
+
+# set up empty vectors to store samples
+mus <- c()
+gams <- c()
+
+# store starting values in vectors of samples
+mus[1] <- mu
+gams[1] <- gam
+```
+
+```{r run-gibbs, echo = T}
+# choose number of iterations
+# (we'll start with 100, but in practice you'd choose something much bigger)
+N <- 100
+
+# run through Gibbs Sampling for a total of N iterations
+for(i in 2:N){
+  # update mu
+  m1 <- y*gam + m/v
+  m2 <- gam + 1/v
+  mu <- rnorm(n = 1, mean = (m1)/(m2), sd = sqrt(1/m2))
+  
+  # update gamma
+  g1 <- 0.5 + a
+  g2 <- 0.5*(y-mu)^2 + b
+  gam <- rgamma(n = 1, shape = g1, rate = g2)
+  
+  # store new samples
+  mus[i] <- mu
+  gams[i] <- gam
+}
+```
+
+5. Look at a histogram of your posterior samples for $\mu, \gamma$ and $\sigma^2 = \frac{1}{\gamma}$.
+
+**ANSWER:**
+
+```{r histograms, echo = T, fig.height = 3}
+par(mfrow=c(1,3))
+hist(mus, xlab = expression(mu), main = '')
+hist(gams, xlab = expression(gamma), main = '')
+hist(1/gams, xlab = expression(paste(sigma^2,'=',1/gamma)), main = '')
+```
+
+6. Estimate the posterior mean and median of $\mu$.
+
+**ANSWER:**
+
+```{r posterior-summaries, echo = T}
+# posterior mean
+mean(mus)
+
+# posterior median
+median(mus)
+```
+
+
+7. Find a 90% credible interval for $\mu$, and estimate the probability that $\mu > 2$.
+
+**ANSWER:**
+
+```{r posterior-inference, echo = T}
+# 90% credible interval
+quantile(mus, probs = c(0.05, 0.95))
+
+# P(mu > 2 | y)
+mean(mus > 2)
+```
+
+8. Create a *trace plot* showing the behavior of the samples over the $N$ iterations.
+
+**ANSWER:**
+
+```{r trace-plots, echo = T, fig.height = 3}
+iterations <- 1:N
+
+par(mfrow=c(1,3))
+plot(mus ~ iterations, xlab = 'Iteration', ylab = expression(mu), type = 'l')
+plot(gams ~ iterations, xlab = 'Iteration', ylab = expression(gamma), type = 'l')
+plot(1/gams ~ iterations, xlab = 'Iteration', ylab = expression(sigma^2), type = 'l')
+```
+
+
+
+9. As mentioned above, in practice we usually pick a burn-in period of initial iterations to remove. This decision is often motivated by the fact that, depending on your choice of starting value, it may take awhile for your chain of samples to look like it is "mixing" well. Play around with your choice of starting value above to see if you can find situations in which a burn-in period might be helpful. 
