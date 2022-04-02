@@ -2,7 +2,25 @@
 title: "Gibbs_Sampling_Activity"
 author: "Ty Bruckner and Franco Salinas"
 output: pdf_document
+bibliography: Library.bib  
 ---
+
+
+# Markov Chains Monte Carlo (MCMC)
+
+MCMC is the application of Markov chains to simulate probability models. Two important characteristics are that MCMC samples aren't taken from the posterior pdf and that the samples aren't independent. The fact that the samples aren't independent reflects the "chain" fiture of the algorithm. For example in the $N-length$ MCMC sample ( Markov chain) $\{\theta^{(1)},\theta^{(2)},...,\theta^{(N)}\}$, when constructing the chain $\theta^{(2)}$ is drawn from some model that depends upon $\theta^{(1)}$, $\theta^{(3)}$ is drawn from some model that depends on $\theta^{(2)}$ and so on. 
+
+We can say that the (i+1)st chain value $\theta^{(i+1)}$ has a conditional pdf $f(\theta^{(i+1)}|\theta^{(i)},y)$ is drawn from a model that depends on data y and the previous chain value $\theta^{(i)}$. It's important to note that by the Markov property, $\theta^{(i+1)}$ depends on the preceding chain values only through $\theta^{(i)}$, the most recent value. The only information we need to simulate $\theta^{(i+1)}$ is the value of $\theta^{(i)}$. Therefore, each value can be sampled from a different model, and none of these models are the target posterior. The pdf from which a Markov Chain value is simulated is not equivalent to the posterior pdf. 
+
+$$f(\theta^{(i+1)}|\theta^{(i)}, y)\ne f(\theta^{(i+1)}| y)$$
+
+We will conduct the MCMC simulation using the rstan package [@rstan]. There are two essential steps to all rstan analyses, first we define the Bayesian model structure and then simulate the posterior.
+
+
+
+
+
+# Metropolis-Hastings algorith
 
 # Gibbs Sampling
 
