@@ -52,7 +52,7 @@ bb_sim <- stan(model_code = bb_model, data = list(Y = 9),
                chains = 4, iter = 5000*2, seed = 84735)
 ```
 
-As you can see in Figure 1, when observing the distribution of the sampled $\pi$ values we approximate the target Beta(11,3) posterior model of $\pi$. The target pdf is superimposed in black. [@ADDALICIASBOOK]
+As you can see in Figure 1, when observing the distribution of the sampled $\pi$ values we approximate the target Beta(11,3) posterior model of $\pi$. The target pdf is superimposed in black. [@Alicia]
 
 ```{r}
 # Histogram of the Markov chain values
@@ -66,7 +66,12 @@ mcmc_dens(bb_sim, pars = "pi") +
   ylab("density")
 ```
 
-# Metropolis-Hastings algorith
+# Metropolis-Hastings algorithm
+
+If we weren't able to recognize the posterior model of $\mu$ in a Normal-Normal model, we could approximate it using the MCMC simulation. Metropolis-Hastings algorithm helps automate the decision of what values of $\mu$ to sample and with what frequency. This algorithm iterates through a two step process. If we are in the location $\mu^{(i)} = \mu$ we select the next value to sample first by proposing a random location $\mu^{\prime}$ and then we decide whether to stay at the current location or to stay at the current location $\mu^{(i+1)} = \mu$. 
+
+There are special cases of the Metropolis-Hastings that involve a different sampling decision criteria such as the Gibbs sampling, the Monte Carlo and the Metropolis algorithms. In this report we will  be focusing on the Gibbs Sampling algorithm. 
+
 
 # Gibbs Sampling
 
