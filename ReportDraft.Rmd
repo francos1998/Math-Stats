@@ -1,0 +1,65 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+Gibbs Sampling 
+Ty Bruckner and Franco Salinas Meza
+Introduction
+	Gibbs sampling is a type of Markov Chain Monte Carlo sampling that approximates posterior distributions. This method is an alternative to Metropolis-Hastings which we have studied in Math Stats and in Bayesian Statistics. Gibbs sampling is  a method that samples from separate conditional distributions and is most useful when the joint posterior distribution is unknown or hard to sample from . Like in standard Markov Chain each event is dependent on the last event; and it is only dependent on the last event.
+Motivation 
+	Overall, we wanted to expand our knowledge on Bayesian statistics and estimation. We both thought the idea of priors and the entire bayesian philosophy are interesting ideas that we want to be able to use and understand in our careers. In Bayesian Statistics we used Metropolis-Hastings to implement our models and to sample our posterior distributions. Gibbs is a popular alternative to Metropolis-Hastings depending on the information one has available. Franco used Monte Carlo simulations in finance and wanted to learn more about the applications of MCMC. Ty wanted to explore topics from Bayes, his capstone course more deeply. 
+
+
+
+
+
+
+Background Knowledge
+Monte Carlo https://towardsdatascience.com/an-overview-of-monte-carlo-methods-675384eb1694
+
+Monte Carlo simulations randomly sample points within a region to approximate a distribution. The example above is a simple illusion of a uniform distribution for an estimate for pi. This samples the proportion of points within the square region that fall within the circle's bounds. The proportion would be equal to $\frac{\pi}{4}$ since we are only interested in one fourth of the circle. As we sample more, our estimation for pi gets closer to the actual distribution. This is due to the Central Limit Theorem. Monte Carlo simulations work well when the posterior distribution is easy to sample from. However, it is not always possible to sample from the posterior distribution, nor is it always efficient. 
+Markov Chains
+
+Markov Chains are an example of a random walk. Random walks are a series of random moves through space in succession. Random walks use a combination of past events in the probability to determine the next step. Markov Chains are a special case in which only the previous step/location is used to determine the probability distribution of the next step. This can be shown as $P(X_{n+1} = x | X_n = x_n)$ meaning the probability distribution of on move n+1 is only conditioned on the result of the previous move n. It is important to talk about the fact that Markov Chains are dependent on the previous move and are not an independent event. 
+Need a picture
+Gibbs Sampling Overview
+Gibbs Sampling is a specific type of MCMC sampling that is used when it is hard to sample from the joint pdf or pmf or when it is unknown. To perform Gibbs sampling you must know the conditional distributions of both variables. Next I will walk through the process with example pictures:
+Derive a specific probability distribution: Example from [Youtube](https://www.youtube.com/watch?v=ER3DDBFzH2g)
+
+We start with an example of two bernoulli variables $A, B$
+We know find their conditional distributions
+
+$$P(A|B = 0) \in P(A=1) = \frac{4}{5} \space , P(A = 0) = \frac{1}{5} $$
+
+$$P(A|B = 1) \in P(A=1) = \frac{2}{5} \space , P(A = 0) = \frac{3}{5} $$
+$$P(B|A = 0) \in P(B=1) = \frac{3}{4} \space , P(B = 0) = \frac{1}{4} $$
+
+$$P(B|A = 1) \in P(B=1) = \frac{1}{3} \space , P(B = 0) = \frac{2}{3} $$
+
+1. Pick specific starting value of $(x_0,y_0)$ 
+2.
