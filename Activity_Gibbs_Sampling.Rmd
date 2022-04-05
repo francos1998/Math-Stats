@@ -1,0 +1,165 @@
+---
+title: "Gibbs Sampling Activity"
+output: pdf_document
+bibliography: Library.bib  
+---
+
+# Instructions
+
+1. Download this `.Rmd` file and open it in RStudio.
+
+2. Update the author name and date.
+
+3. Answer the questions below, using LaTeX within R Markdown to type up your answers.
+
+4. When you finish, `Knit to PDF`.
+
+
+```{r, echo=FALSE, message=FALSE}
+library(rstan)
+library(bayesplot)
+```
+
+# Markov Chains
+
+Fill in the code to construct an MCMC approximation of the Gamma-Poisson posterior corresponding to 
+
+$$Y_{i}\mid\lambda\stackrel{\text{ind}}{\sim} Pois(\lambda)$$
+$$\lambda \sim Gamma(3,1)$$
+
+upon observing data $(Y_{1},Y_{2}) = (2,8)$. The code will require two terms you haven't seen, but you might guess how to use: poisson() and gamma(). Also, you code will incorporate a vector of $(Y_{1},Y_{2})$ variables and observations as opposed to a single variable Y. 
+
+. Run four parallel chains for 10,000 iterations each (resulting in a sample size of 5000 per each chain)
+
+
+```{r}
+# STEP 1: DEFINE the model
+gp_model <- "
+  data {
+    int<___> Y[2];
+  }
+  parameters {
+    real<___> lambda;
+  }
+  model {
+    Y ~ ___(___);
+    lambda ~ ___(___, ___);
+  }
+"
+
+# STEP 2: SIMULATE the posterior
+#gp_sim <- ___(model_code = ___, data = list(___), 
+#              chains = ___, iter = ___, seed = 84735)
+```
+
+
+# Gibbs Sampling
+
+Suppose we have data from a normal distribution where both the mean **and** variance are unknown. For convenience, we'll parameterize this model in terms of the *precision* $\gamma = \frac{1}{\sigma^2}$ instead of the variance $\sigma^2$. 
+
+$$Y \mid \mu, \gamma \sim N\left(\mu, \frac{1}{\gamma}\right)$$
+
+Suppose we put the following *independent* priors on the mean $\mu$ and precision $\gamma$:
+
+$$\mu \sim N(m, v)$$
+
+$$\gamma \sim \text{Gamma}(a,b)$$
+
+1. Write down the joint posterior distribution for $\mu, \gamma$. Does this look like a recognizable probability distribution?
+
+**ANSWER:** 
+
+$$
+\begin{aligned}
+g(\mu,\gamma \mid y) & \propto f(y \mid \mu, \gamma) f(\mu, \gamma) \\
+& = \dots
+\end{aligned}
+$$
+
+
+You should have answered "no" to Question 1, meaning that we can't use our usual techniques here to find Bayes estimators for $\mu$ or $\gamma$ since we don't have a recognizable posterior distribution. Instead, we'll use a computational technique known as *Gibbs Sampling* to generate samples from this posterior distribution. Gibbs Sampling is particularly useful when we have more than one parameter, and the basic idea involves reducing our problem to a series of calculations involving one parameter at a time. In order to perform Gibbs Sampling, we need to find the conditional distributions $$g(\mu \mid y, \gamma) \propto f(y \mid \mu, \gamma)f(\mu)$$ $$g(\gamma \mid y, \mu) \propto f(y \mid \mu,\gamma)f(\gamma)$$ We will use these conditional distributions to sample from the joint posterior $g(\mu, \gamma \mid y)$ according to the following algorithm:
+
+> (1) Start with initial values $\mu^{(0)}, \gamma^{(0)}$.
+
+> (2) Sample $\mu^{(t+1)} \sim g(\mu \mid y, \gamma = \gamma^{(t)})$.
+
+> (3) Sample $\gamma^{(t+1)} \sim g(\gamma \mid y, \mu = \mu^{(t+1)})$.
+
+> (4) Repeat many times.
+
+It turns out that the resulting $\mu^{(0)}, \mu^{(1)}, \dots, \mu^{(N)}$ and $\gamma^{(0)}, \gamma^{(1)}, \dots, \gamma^{(N)}$ are samples from the joint posterior distribution $g(\mu, \gamma \mid Y)$, and we can use these sampled values to estimate quantities such as the posterior mean of each parameter $\hat{E}(\mu \mid y) = \frac{1}{N}\sum_{i=1}^N \mu^{(i)}, \ \ \hat{E}(\gamma \mid y) = \frac{1}{N}\sum_{i=1}^N \gamma^{(i)}$. Note that in practice we typically remove the initial iterations, known as the "burn-in" period: e.g., $\hat{E}(\mu \mid y) = \frac{1}{N-B}\sum_{i=B}^N \mu^{(i)}$.
+
+2. Show that the conditional distributions $g(\mu \mid y, \gamma), g(\gamma \mid y, \mu)$ are proportional to $f(y \mid \mu, \gamma)f(\mu), f(y \mid \mu,\gamma)f(\gamma)$, respectively, as stated above.
+
+**ANSWER:**
+
+
+3. Use this result to show that $\mu \mid y, \gamma \sim N\left(\frac{y\gamma + \frac{m}{v}}{\gamma + \frac{1}{v}}, \left[\gamma + \frac{1}{v} \right]^{-1}\right)$ and $\gamma \mid y, \mu \sim \text{Gamma}\left(\frac{1}{2} + a, \frac{1}{2}(y-\mu)^2 + b\right)$.
+
+**ANSWER:**
+
+$$
+\begin{aligned}
+g(\mu \mid y, \gamma) &\propto f(y \mid \mu, \gamma)f(\mu) \\
+&= \dots
+\end{aligned}$$
+
+
+
+
+$$
+\begin{aligned}
+g(\gamma \mid y, \mu) &\propto f(y \mid \mu, \gamma)f(\gamma) \\
+& = \dots
+\end{aligned}$$
+
+
+
+4. Suppose that we choose the following hyperparameters for our prior distributions---$m = 5, v = 5, a = 5, b = 5$---and that we observe $y = 10$. Write code to implement this Gibbs Sampler.
+
+**ANSWER:** 
+
+```{r gibbs}
+
+```
+
+5. Look at a histogram of your posterior samples for $\mu, \gamma$ and $\sigma^2 = \frac{1}{\gamma}$.
+
+**ANSWER:**
+
+```{r histograms}
+
+```
+
+6. Estimate the posterior mean and median of $\mu$.
+
+**ANSWER:**
+
+```{r posterior-summaries}
+
+```
+
+
+7. Find a 90% credible interval for $\mu$, and estimate the probability that $\mu > 2$.
+
+**ANSWER:**
+
+```{r posterior-inference}
+
+```
+
+8. Create a *trace plot* showing the behavior of the samples over the $N$ iterations.
+
+**ANSWER:**
+
+```{r trace-plots}
+
+```
+
+
+
+9. As mentioned above, in practice we usually pick a burn-in period of initial iterations to remove. This decision is often motivated by the fact that, depending on your choice of starting value, it may take awhile for your chain of samples to look like it is "mixing" well. Play around with your choice of starting value above to see if you can find situations in which a burn-in period might be helpful.
+
+
+
+
