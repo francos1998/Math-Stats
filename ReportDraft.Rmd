@@ -21,7 +21,7 @@ This is an important topic to expand our knowledge and tool box on Bayesian stat
 
 ## Monte Carlo https://towardsdatascience.com/an-overview-of-monte-carlo-methods-675384eb1694
 
-Monte Carlo simulations randomly sample points within a region to approximate a distribution. The example above is a simple illusion of a uniform distribution for an estimate for pi. This samples the proportion of points within the square region that fall within the circle's bounds. The proportion would be equal to $\frac{\pi}{4}$ since we are only interested in one fourth of the circle. As we sample more, our estimation for pi gets closer to the actual distribution. This is due to the Central Limit Theorem. Monte Carlo simulations work well when the posterior distribution is easy to sample from. However, it is not always possible to sample from the posterior distribution, nor is it always efficient. 
+Monte Carlo simulations randomly sample points within a region to approximate a distribution. The example above is a simple illusion of a uniform distribution for an estimate for $\pi$. This samples the proportion of points within the square region that fall within the circle's bounds. The proportion would be equal to $\frac{\pi}{4}$ since we are only interested in one fourth of the circle. As we sample more, our estimation for $\pi$ gets closer to the actual distribution. This is due to the Central Limit Theorem. Monte Carlo simulations work well when the posterior distribution is easy to sample from. However, it is not always possible to sample from the posterior distribution, nor is it always efficient. 
 
 ## Markov Chains
 
@@ -47,7 +47,7 @@ We will conduct the MCMC simulation using the rstan package [@rstan]. There are 
 ### STEP 1: DEFINE the model
 
 Data: Y is the observed number of success trials. We specify that Y is between 10 and 0. 
-Parameters: The model depends on pi, therefore we must specify that pi can be any real number from 0 to
+Parameters: The model depends on $\pi$, therefore we must specify that $\pi$ can be any real number from 0 to
 Model: We need to specify the model for the data and the model for the prior.
 
 ```{r}
