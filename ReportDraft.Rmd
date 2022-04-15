@@ -333,12 +333,19 @@ plot(1/gams ~ iterations, xlab = 'Iteration', ylab = expression(sigma^2), type =
 
 ### Real World Application
 
-Gibbs sampling has been used in inference of population structure using multilocus genotype data [@Pritchard]. In other words, to infer the population of an individual using their genetic information. I will start defining some of the most important terms in the paper. A locus is the specific physical location of a gene or other DNA sequence on a chromosome, like a genetic street address. Genotype is the pair of alleles inherited for a particular gene and gene is the functional unit of heredity. 
+Gibbs sampling has been used in inference of population structure using multilocus genotype data [@Pritchard]. In other words, to infer the population of an individual using their genetic information. I will start defining some of the most important terms in the paper. A locus is the specific physical location of a gene or other DNA sequence on a chromosome, like a genetic street address. Genotype is the pair of alleles inherited for a particular gene, where gene is the functional unit of heredity. 
 
 Jonathan K. Pritchard, et. al used a Dirichlet distribution
 
 $$D = (\lambda_1, \lambda_2,...,\lambda_J)$$
+The Dirichlet distribution would be defined as: 
+
+
+$$Dir(D\mid\alpha) = \frac{1}{Beta(\alpha)}\prod_{i=1}^J\theta_i^{\alpha_i-1},\space where\space Beta(\alpha)= \frac{\prod_{i=1}^K\Gamma(\alpha_i)}{\Gamma(\sum_{i=1}^J\alpha_i)}\space \alpha= (\alpha_1,...,\alpha_2)$$
+
+
 to model the allele frequencies 
+
 $$p= (p_1,p_2,...,p_J)$$
 with the property that these frequencies sum to 1.  
 
