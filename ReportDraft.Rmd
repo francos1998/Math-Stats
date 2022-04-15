@@ -337,12 +337,9 @@ Gibbs sampling has been used in inference of population structure using multiloc
 
 Jonathan K. Pritchard, et. al used a Dirichlet distribution
 
-$$D = (\lambda_1, \lambda_2,...,\lambda_J)$$
-The Dirichlet distribution would be defined as: 
 
-
-$$Dir(D\mid\alpha) = \frac{1}{Beta(\alpha)}\prod_{i=1}^J\theta_i^{\alpha_i-1},\space where\space Beta(\alpha)= \frac{\prod_{i=1}^K\Gamma(\alpha_i)}{\Gamma(\sum_{i=1}^J\alpha_i)}\space \alpha= (\alpha_1,...,\alpha_2)$$
-
+$$D \sim Dir(\alpha) = \frac{1}{Beta(\alpha)}\prod_{i=1}^J\theta_i^{\alpha_i-1}*I(D \in S),\space where\space Beta(\alpha)= \frac{\prod_{i=1}^K\Gamma(\alpha_i)}{\Gamma(\sum_{i=1}^J\alpha_i)}\space \alpha= (\alpha_1,...,\alpha_2)$$
+for a vector of J dimensions $$D = (\lambda_1, \lambda_2,...,\lambda_J)$$
 
 to model the allele frequencies 
 
