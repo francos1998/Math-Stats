@@ -1,0 +1,91 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+### Real World Application
+
+Gibbs sampling has been used in the inference of population structure using multilocus genotype data [@Pritchard]. In other words, to infer the population of an individual using their genetic information. I will start defining some of the most important terms in the paper. A locus is the specific physical location of a gene or other DNA sequence on a chromosome, like a genetic street address. A genotype is the pair of alleles inherited from each parent for a particular gene, where an allele is a variation of a gene and a gene is the functional unit of heredity. For example, if a gene contains information on hair color one allele might code for brown and other for blond, a genotype would be the pair of alleles one coded for brown and the other for blond hair. 
+
+Assuming that each population is modeled by a characteristic set of allele frequencies, let X represent the genotypes of the sampled individuals, Z the populations of origin of individuals, and P the allele frequencies in all populations. Each allele at each locus in each genotype is an independent draw from the appropriate frequency distribution. This specifies the probability distribution $Pr(X\mid Z,P)$. Which is the probability that we draw a specific genotype given the population of origin of an individual and the allele frequency in a population. 
+
+Jonathan K. Pritchard, et. al used a Dirichlet distribution to model the probability that we observe specific genotypes 
+
+
+$$D \sim Dir(\alpha) = \frac{1}{Beta(\alpha)}\prod_{i=1}^J\theta_i^{\alpha_i-1}, \text{ where  }Beta(\alpha)= \frac{\prod_{i=1}^K\Gamma(\alpha_i)}{\Gamma(\sum_{i=1}^J\alpha_i)}\space \alpha= (\alpha_1,...,\alpha_2)$$
+where D is a vector of J dimensions of the form $D = (\lambda_1, \lambda_2,...,\lambda_J),\text{ and }\alpha_i>0$ and $D$ belongs to the probability simplex where vectors are positive and the sum of their probability mass functions are always one. We use this distribution to model the allele frequencies $p= (p_1,p_2,...,p_J)$ knowing that these frequencies sum to 1.  
+
+The authors use a Dirichlet distribution given that it is a commonly used conjugate prior. Conjugate priors make the process of estimating a posterior easier given that the posterior will be in the same probability distribution family. 
+
+
+I will introduce some of their model notation. The authors assumed that each population is modeled by a characteristic set of allele frequencies. X denotes the genotypes of the sampled individuals, Z denotes the individual's unknown populations of origin, and P denotes the unknown allele frequency in all populations. 
+
+We adopt a Bayesian approach by specifying models priors $Pr(Z)$ and $Pr(P)$ for both $Z$ and $P$. The authors used a Bayesian approach to estimate the quantities of interest. The authors specified model priors $Pr(Z)$ and $Pr(P)$ for both Z and P.
+
+Having observed the genotypes, X, our knowledge of Z and P is given by the posterior distribution 
+
+$$Pr(Z,P\mid X) \propto Pr(Z) Pr(P)Pr(X\mid Z,P)$$ (1)
+
+Where $Pr(Z)$ and $Pr(P)$ are the priors and $Pr(X\mid Z,P)$ is the likelihood function of a genotype given a population and allele frequency. 
+
+We can't compute this distribution exactly but we can obtain an approximate sample $(Z^{(1)},P^{(1)}),(Z^{(2)},P^{(2)}), ...,(Z^{(M)},P^{(M)})$ from $Pr(Z,P\mid X)$ from $Pr(Z,P\mid X)$ using Gibbs Sampling. Inference for Z and P may be based on summary statistics obtained from this sample. We will focus on a simpler model where each person is assumed to have originated in a single population. 
+
+Suppose we sample N individuals with paired chromosomes (diploid). We assume each individual originates in one of K populations, each with its own characteristic set of allel frequencies. The vectors X (observed genotypes), Z (populations of origin of the individuals), and P (the unknown allele frequencies in the populations). These vectors consist of the following elements. 
+
+$$(x_l^{(i,1)}, x_l^{(i,2)}) = \text{genotype of the ith individual at the lth locus, where i= 1,2,...,N and l= 1,2,...,L;}$$
+$$Z^{(i)}= \text{population from which individual i originated}$$
+$$p_{klj}= \text{frequency of allele j at locus l in population k, where k=1,2,...,K and }j = 1,2,...,J_l$$
+
+where $J_{l}$ is the number of distinct alleles observed at locus l, and these alleles are labeled 1,2,...,$J_{l}$. 
+
+Given the population of origin of each subject, the genotypes are assumed to be sampled by drawing alleles independently from the respective population frequency distributions $Pr(X\mid Z,P) = Pr(x_l^{(i,a)} = j\mid Z,P) = p_z(i)lj\text{      (2)}$ independently for each $x_l^{(i,a)}$ (allele for ith individual at lth locus). $p_z(i)lj$ is the frequency of allele j at locus l in the population of origin of individual i and it's our likelihood function. 
+
+When defining the prior $P(Z)$ the authors assumed that before observing the genotypes we have no information about the population of origin of each subject. If the probability that individual i originated in population k is the same for all k, then 
+
+$$P(Z) = Pr(z^{(i)} = k) = \frac{1}{K}\text{    (4)}$$
+
+independently for all individuals.
+
+When defining the prior $Pr(P)$ the authors used the Dirichlet distribution to model the distribution on allele frequencies $p= (p_1,p_2,...,p_J)$. These frequencies have the property that they sum up to 1. This distribution specifies the probability of a particular set of allele frequencies $p_{kl}$ for population k at locus l. 
+
+$$ Pr(P) = p_{kl}\sim D = (\lambda_1, \lambda_2,...,\lambda_J)\text{  (4)}$$
+
+in dependently for each k,l. The expected frequency of allele j for a population k is proportional to $\lambda_j$, and the variance of this frequency decreases as the sum of the $\lambda_j$ pmf increases (as the sum of the pmf is closer to 1). The authors take $\lambda_1 = \lambda_2 = ... = \lambda_{Jl}=1.0$ which gives a uniform distribution on the allele frequencies allowing each $\lambda_j$ to be equally likely.  
+
+Then the authors proceed to apply the Gibbs Sampling algorithm which can be described as follows. 
+
+Considering that our conditional distributions are
+
+$$P(Z\mid X,P) \propto f(X \mid Z,P) f(Z)$$ 
+
+And, 
+$$P(P\mid X,Z) \propto f(X \mid Z,P) f(P)$$ 
+
+
+
+we can construct a Markov chain with stationary (target) multinomial distribution $Pr(Z,P\mid X)$ as follows: 
+
+
+Starting with the initial value $Z^{(0)}$ for Z (chosen randomly) we iterate over the following steps for m=1,2,....
+
+Step 1. Sample $P^{(m)}$ from $Pr(P \mid X,Z^{(m-1)})$
+Step 1. Sample $Z^{(m)}$ from $Pr(Z \mid X,P^{(m)})$
+
+In step 1 we are estimating allele frequencies for each population given our sampled genotype and assuming that the population of origin of each individual is known. In step 2 we estimate the population of origin of each individual, given our sampled genotype and assuming that the population's allele frequencies are known. For sufficiently large m and c, $(Z^{(m)}, P^{(m)}), (Z^{(m+c)}, P^{(m+c)}),(Z^{(m+2c)}, P^{(m+2c)}),...$ will be approximately independent random samples from $Pr(Z,P \mid X)$
+
+To be more specific, setting $\theta = (\theta_1,\theta_2) = (Z,P)$ and letting $\pi(Z,P) = Pr(Z,P\mid X)$, and starting with initial values $\theta^{(0)} = (\theta_1^{(0)},...,\theta_r^{(0)})$, we iterate the following steps for $m= 1,2,...$
+
+Step 1. Sample $\theta_{1}^{(m)}$ from $\pi(\theta_1\mid\theta_2^{(m-1)}, \theta_3^{(m-1)},...,\theta_r^{(m-1)})$
+
+Step 2. Sample $\theta_{2}^{(m)}$ from $\pi(\theta_2\mid\theta_1^{(m)}, \theta_3^{(m-1)},...,\theta_r^{(m-1)})$
+
+Step r. Sample $\theta_{r}^{(m)}$ from $\pi(\theta_r\mid\theta_1^{(m)}, \theta_2^{(m)},...,\theta_r^{(m)})$
+
+We can show that if $\theta^{(m-1)}\sim\pi(\theta)$, then, $\theta^{(m)}\sim\pi(\theta)$, and so $\pi(\theta)$ is the stationary distribution of this Markov chain. 
+
+
+
+
+
+
+
