@@ -356,13 +356,13 @@ $$Pr(Z,P\mid X) \propto Pr(Z) Pr(P)Pr(X\mid Z,P)$$ (1)
 
 We can't compute this distribution exactly but we can obtain an approximate sample $(Z^{(1)},P^{(1)}),(Z^{(2)},P^{(2)}), ...,(Z^{(M)},P^{(M)})$ from $Pr(Z,P\mid X)$ from $Pr(Z,P\mid X)$ using Gibbs Sampling. Inference for Z and P may be based on summary statistics obtained from this sample. We will focus on a simpler model where each person is assumed to have originated in a single population. 
 
-Suppose we sample N individuals with paired chromosomes (diploid). We assume each individual originates in one of K populations, each with its own characteristic set of allel frequencies. The vectors X (observed genotypes), Z (populations of origin of the individuals), and K ()
+Suppose we sample N individuals with paired chromosomes (diploid). We assume each individual originates in one of K populations, each with its own characteristic set of allel frequencies. The vectors X (observed genotypes), Z (populations of origin of the individuals), and P (the unknown allele frequencies in the populations). These vectors consiste of the following elements. 
 
-$$(x_l^{(i,1)}, x_l^{(i,2)}) = \text{genotype of the ith individuals at the lth locus, where i= 1,2,...,N and l= 1,2,...,L;}$$
+$$(x_l^{(i,1)}, x_l^{(i,2)}) = \text{genotype of the ith individual at the lth locus, where i= 1,2,...,N and l= 1,2,...,L;}$$
 $$Z^{(i)}= \text{population from which individual i originated}$$
 $$p_{klj}= \text{frequency of allele j at locus l in population k, where k=1,2,...,K and }j = 1,2,...,J_l$$
 
-where $J_{l}$ is the numner of distinct alleles observed at locus l, and these alleles are labeled 1,2,...,$J_{l}$. 
+where $J_{l}$ is the number of distinct alleles observed at locus l, and these alleles are labeled 1,2,...,$J_{l}$. 
 
 Suppose we genotype N diploid individuals at L loci. Each individual is assumed to originate in one of K populations, each with it's own set set of allele frequencies. 
 
