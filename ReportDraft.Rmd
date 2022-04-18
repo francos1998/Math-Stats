@@ -5,6 +5,7 @@ output: pdf_document
 bibliography: Library.bib  
 ---
 ```{r, echo=FALSE, message=FALSE}
+library(bayesrules)
 library(rstan)
 library(bayesplot)
 ```
@@ -18,6 +19,38 @@ Using Bayesian statistics we can incorporate prior knowledge into the estimation
 This is an important topic to expand our knowledge and tool box on Bayesian statistics and estimation. We think the idea of incorporating prior knowledge (priors) in the estimation of a parameter is an interesting tool that can be useful in different careers including quantitative finance and bio statistics. Some people might be familiar with the Metropolis-Hastings algorithm to implement a simulation and to sample our posterior distributions. Gibbs is a suitable alternative to Metropolis-Hastings depending on the information one has available. The authors of this paper were interested in the applications of Monte Carlo simulations in finance and also wanted to explore topics from previous Bayesian Statistics classesn more deeply. 
 	
 # Background Knowledge
+
+## Bayesian Statistics
+Bayesian Statistics is a different philosophy of statistics. Most statistical modeling that people use are under the frequentist school of thought. Frequentists methods depend only on the observed data. This means that interpretations and inference can only be from the sample that was studied or collected. Bayesian methods incorporate prior beliefs into the model before the data is received. Example
+Prior: A prior is a probability distribution that shows our beliefs before any data is taken into account. A common distribution used for a prior is a beta model. Priors incorporate both the mean and the variance of your previous beliefs about the data. Priors with a greater spread indicates a less confident belief. 
+
+```{r}
+plot_beta(alpha = 1, beta = 1)
+plot_beta(alpha = 10, beta = 10)
+plot_beta(alpha = 7, beta = 4)
+plot_beta(alpha = 4, beta = 7)
+```
+
+
+
+Likelihood is the distribution of the data. In this example the outcome variable is binary on whether the person was voted for or not. So we have a binomial distribution of the likelihood. 
+
+```{r}
+plot_binomial_likelihood(40,60)
+```
+
+
+Posterior
+The posterior is simply a combination of the prior and data. In this case we conveniently chose conjugate distribution in which the prior and posterior share the same distribution. We combine our data with our prior model to form the posterior distribution. As more data is incorporated more weight shifts to the data from the prior. 
+
+```{r}
+plot_beta_binomial(alpha = 1, beta = 1, y = 20, n= 30)
+plot_beta_binomial(alpha = 10, beta = 10, y = 20, n= 30)
+plot_beta_binomial(alpha = 7, beta = 4, y = 20, n= 30)
+plot_beta_binomial(alpha = 4, beta = 7, y = 20, n= 30)
+```
+
+
 
 ## Monte Carlo https://towardsdatascience.com/an-overview-of-monte-carlo-methods-675384eb1694
 
