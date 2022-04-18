@@ -341,26 +341,28 @@ Jonathan K. Pritchard, et. al used a Dirichlet distribution to model the probabi
 
 
 $$D \sim Dir(\alpha) = \frac{1}{Beta(\alpha)}\prod_{i=1}^J\theta_i^{\alpha_i-1},\space where\space Beta(\alpha)= \frac{\prod_{i=1}^K\Gamma(\alpha_i)}{\Gamma(\sum_{i=1}^J\alpha_i)}\space \alpha= (\alpha_1,...,\alpha_2)$$
-where D is a vector of J dimensions of the form $D = (\lambda_1, \lambda_2,...,\lambda_J),\space and \space \alpha_i>0$ and $\theta$ belongs to the probability simplex where vectors are positive and the sum of the sum of their probability mass functions are always one. We use this distribution to model the allele frequencies $p= (p_1,p_2,...,p_J)$ knowing that these frequencies sum to 1.  
+where D is a vector of J dimensions of the form $D = (\lambda_1, \lambda_2,...,\lambda_J),\space and \space \alpha_i>0$ and $D$ belongs to the probability simplex where vectors are positive and the sum of the sum of their probability mass functions are always one. We use this distribution to model the allele frequencies $p= (p_1,p_2,...,p_J)$ knowing that these frequencies sum to 1.  
 
 The authors use a Dirichlet distribution given that it is a commonly used conjugate prior. Conjugate priors make the process of estimating a posterior easier given that the posterior will be in the same probability distribution family. 
 
 
-I will introduce some of their model notation. The authors assumed that each population is modeled by a characteristic set of allele frequencies. X denotes the genotypes of the sampled individuals, Z denotes the individual's unknown populations of origin, and P denotes the unknown allele frequency in all populations. These vectors contain, 
+I will introduce some of their model notation. The authors assumed that each population is modeled by a characteristic set of allele frequencies. X denotes the genotypes of the sampled individuals, Z denotes the individual's unknown populations of origin, and P denotes the unknown allele frequency in all populations. 
+
+We adopt a Bayesian approach by specifying models priors $Pr(Z)$ and $Pr(P)$ for both $Z$ and $P$. The authors used a Bayesian approach to estimate the quantities of interest. The authors specified model priors $Pr(Z)$ and $Pr(P)$ for both Z and P.
+
+Having observed the genotypes, X, our knowledge of Z and P is given by the posterior distribution 
+
+$$Pr(Z,P\mid X) \propto Pr(Z) Pr(P)Pr(X\mid Z,P)$$ (1)
+
+We can't compute this distribution exactly but we can obtain an approximate sample $(Z^{(1)},P^{(1)}),(Z^{(2)},P^{(2)}), ...,(Z^{(M)},P^{(M)})$ from $Pr(Z,P\mid X)$ from $Pr(Z,P\mid X)$ using Gibbs Sampling. Inference for Z and P may be based on summary statistics obtained from this sample. We will focus on a simpler model where each person is assumed to have originated in a single population. 
+
+Suppose we sample N individuals with paired chromosomes (diploid). We assume each individual originates in one of K populations, each with its own characteristic set of allel frequencies. The vectors X (observed genotypes), Z (populations of origin of the individuals), and K ()
 
 $$(x_l^{(i,1)}, x_l^{(i,2)}) = \text{genotype of the ith individuals at the lth locus, where i= 1,2,...,N and l= 1,2,...,L;}$$
 $$Z^{(i)}= \text{population from which individual i originated}$$
 $$p_{klj}= \text{frequency of allele j at locus l in population k, where k=1,2,...,K and }j = 1,2,...,J_l$$
 
 where $J_{l}$ is the numner of distinct alleles observed at locus l, and these alleles are labeled 1,2,...,$J_{l}$. 
-
-The authors used a Bayesian approach to decide how to perform inference for the quantities of interest. The authors specified model priors $Pr(Z)$ and $Pr(P)$ for both Z and P.
-
-Having observed the genotypes, X, our knowledge of Z and P is given by the posterior distribution 
-
-$$Pr(Z,P\mid X) \propto Pr(Z) Pr(P)Pr(X\mid Z,P)$$ (1)
-
-We can't compute this distribution exactly but we can obtain an approximate sample $(Z^{(1)},P^{(1)}),(Z^{(2)},P^{(2)}), ...,(Z^{(M)},P^{(M)})$ from $Pr(Z,P\mid X)$ from $Pr(Z,P\mid X)$ using Gibbs Sampling. Inference for Z and P may be based on summary statistics obtained from this sample. This example will focus on a simpler model where each person is assumed to have originated in a single population. 
 
 Suppose we genotype N diploid individuals at L loci. Each individual is assumed to originate in one of K populations, each with it's own set set of allele frequencies. 
 
