@@ -58,7 +58,7 @@ gp_model <- "
 
 # STEP 2: SIMULATE the posterior
 #gp_sim <- ___(model_code = ___, data = list(___), 
-#              chains = ___, iter = ___, seed = 84735)
+#              chains = 4, iter = 10000, seed = 84735)
 ```
 
 
