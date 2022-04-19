@@ -87,7 +87,7 @@ We will conduct the MCMC simulation using the rstan package [@rstan]. There are 
 *Parameters*: The model depends on $\pi$, therefore we must specify that $\pi$ can be any real number from 0 to
 *Model*: We need to specify the model for the data and the model for the prior.
 
-```{r}
+```{r, results='hide'}
 # STEP 1: DEFINE the model
 bb_model <- "
   data {
@@ -105,7 +105,7 @@ bb_model <- "
 
 ### STEP 2: Simulate the posterior
 
-We simulate the posterior using the stan() function. This function designs and runs an MCMC algorithm to produce an approximate sample from the Beta-Binomial posterior. The model code argument requires a string that defines the model. The data argument requires a list of observed data. The chains argument specifies how many parallel Markov Chains we are running. Since we are running four chains we will have four $\pi$ values. The iter argument specifies the number of iterations or length for each chain. The first half of this iterations are thrown out as "burn in" samples. To keep our random results constant we utilize the seed argument within the stan() function. 
+We simulate the posterior using the stan() function. This function designs and runs an MCMC algorithm to produce an approximate sample from the Beta-Binomial posterior. The model code argument requires a string that defines the model. The data argument requires a list of observed data. The chains argument specifies how many parallel Markov Chains we are running. Since we are running four chains we will have four $\pi$ values. The "iter' argument specifies the number of iterations or length for each chain. The first half of this iterations are thrown out as "burn in" samples. To keep our random results constant we utilize the seed argument within the stan() function. 
 
 ```{r, echo=FALSE, results='hide'}
 
@@ -122,9 +122,14 @@ mcmc_hist(bb_sim, pars = "pi") +
   ylab("count")
 
 # Density plot of the Markov chain values
+p = seq(0, 1, length=100)
 mcmc_dens(bb_sim, pars = "pi") + 
   yaxis_text(TRUE) + 
-  ylab("density")
+  ylab("density")+
+  plot(p, dbeta(p, 11, 3), type='l')
+
+
+
 ```
 
 # Metropolis-Hastings algorithm
