@@ -18,6 +18,7 @@ bibliography: Library.bib
 ```{r, echo=FALSE, message=FALSE}
 library(rstan)
 library(bayesplot)
+library(bayesrules)
 ```
 
 # Markov Chains
@@ -26,8 +27,16 @@ Fill in the code to construct an MCMC approximation of the Gamma-Poisson posteri
 
 $$Y_{i}\mid\lambda\stackrel{\text{ind}}{\sim} Pois(\lambda)$$
 $$\lambda \sim Gamma(3,1)$$
+```{r, echo=FALSE}
+plot_gamma(3,1)
+```
+
 
 upon observing data $(Y_{1},Y_{2}) = (2,8)$. The code will require two terms you haven't seen, but you might guess how to use: poisson() and gamma(). Also, you code will incorporate a vector of $(Y_{1},Y_{2})$ variables and observations as opposed to a single variable Y. 
+
+```{r}
+plot_poisson_likelihood(5)
+```
 
 . Run four parallel chains for 10,000 iterations each (resulting in a sample size of 5000 per each chain)
 
@@ -50,6 +59,11 @@ gp_model <- "
 # STEP 2: SIMULATE the posterior
 #gp_sim <- ___(model_code = ___, data = list(___), 
 #              chains = ___, iter = ___, seed = 84735)
+```
+
+
+```{r}
+plot_gamma_poisson(3,1,10,2)
 ```
 
 
