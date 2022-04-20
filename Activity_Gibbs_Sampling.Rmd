@@ -176,7 +176,7 @@ $$
 
 ```
 
-8. Create a *trace plot* showing the behavior of the samples over the $N$ iterations.
+8. Create a *trace plot* showing the behavior of the samples over the $N$ iterations.Describe what these trace plots tell us.
 
 **ANSWER:**
 
@@ -190,7 +190,8 @@ plot(1/gams ~ iterations, xlab = 'Iteration', ylab = expression(sigma^2), type =
 
 ```
 
-Describe what these trace plots tell us.
+
+
 
 9. As mentioned above, in practice we usually pick a burn-in period of initial iterations to remove. This decision is often motivated by the fact that, depending on your choice of starting value, it may take awhile for your chain of samples to look like it is "mixing" well. Play around with your choice of starting value above to see if you can find situations in which a burn-in period might be helpful.
 

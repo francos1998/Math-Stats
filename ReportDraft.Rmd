@@ -26,7 +26,9 @@ Bayesian Statistics is a different philosophy of statistics. Most statistical mo
 
 ### Example 1
 
-Prior: A prior is a probability distribution that shows our beliefs before any data is taken into account. A common distribution used for a prior is a beta model. Priors incorporate both the mean and the variance of your previous beliefs about the data. Priors with a greater spread indicate a less confident belief. 
+[EXPLAIN EXAMPLE, EXPLAIN WHAT DOES IT MEAN THAT IT HAS BETA PRIOR]
+Prior: A prior is a probability distribution that shows our beliefs before any data is taken into account. A common distribution used for a prior is a beta model. Priors incorporate both the mean and the variance of your previous beliefs about the data. Priors with a greater spread indicate a less confident belief.
+[EXPLAIN WHAT YOU ARE DOING HERE WITH THIS GRAPHS]
 
 ```{r}
 plot_beta(alpha = 1, beta = 1)
@@ -37,7 +39,7 @@ plot_beta(alpha = 4, beta = 7)
 
 
 
-Likelihood is the distribution of the data. In this example the outcome variable is binary on whether the person was voted for or not. So we have a binomial distribution of the likelihood. 
+Likelihood is the distribution of the data. In this example the outcome variable is binary on whether the person was voted for or not. So we have a binomial distribution of the likelihood. [EXPLAIN WHAT THE GRPAHS ARE AND THE PURPOSE]
 
 ```{r}
 plot_binomial_likelihood(40,60)
@@ -46,6 +48,8 @@ plot_binomial_likelihood(40,60)
 
 Posterior
 The posterior is simply a combination of the prior and data. In this case we conveniently chose conjugate distribution in which the prior and posterior share the same distribution. We combine our data with our prior model to form the posterior distribution. As more data is incorporated more weight shifts to the data from the prior. 
+[EXPLAIN WHAT THE GRPAHS ARE AND THE PURPOSE]
+
 
 ```{r}
 plot_beta_binomial(alpha = 1, beta = 1, y = 20, n= 30)
@@ -68,10 +72,11 @@ Markov Chains are an example of a random walk. Random walks are a series of rand
 [NEED A PICTURE]
 
 
+
 ## Gibbs Sampling Overview
 Gibbs Sampling is a specific type of MCMC sampling that is used when it is hard to sample from the joint pdf or pmf or when the joint pdf (or pmf) is unknown. To perform Gibbs sampling you must know the conditional distributions of both variables. 
 
-# Markov Chains Monte Carlo (MCMC)
+### Markov Chains Monte Carlo (MCMC)
 
 MCMC is the application of Markov Chains to simulate probability models. Two important characteristics are that MCMC samples aren't taken from the posterior pdf and that the samples aren't independent. The fact that the samples aren't independent reflects the "chain" fiture of the algorithm. For example in the $N-length$ MCMC sample ( Markov chain) $\{\theta^{(1)},\theta^{(2)},...,\theta^{(N)}\}$, when constructing the chain $\theta^{(2)}$ is drawn from some model that depends upon $\theta^{(1)}$, $\theta^{(3)}$ is drawn from some model that depends on $\theta^{(2)}$ and so on. 
 
@@ -84,7 +89,7 @@ We will conduct the MCMC simulation using the rstan package [@rstan]. There are 
 ### STEP 1: DEFINE the model
 
 *Data*: Y is the observed number of success trials. We specify that Y is between 10 and 0. 
-*Parameters*: The model depends on $\pi$, therefore we must specify that $\pi$ can be any real number from 0 to
+*Parameters*: The model depends on $\pi$, therefore we must specify that $\pi$ can be any real number from 0 to 1.
 *Model*: We need to specify the model for the data and the model for the prior.
 
 ```{r, results='hide'}
@@ -105,7 +110,7 @@ bb_model <- "
 
 ### STEP 2: Simulate the posterior
 
-We simulate the posterior using the stan() function. This function designs and runs an MCMC algorithm to produce an approximate sample from the Beta-Binomial posterior. The model code argument requires a string that defines the model. The data argument requires a list of observed data. The chains argument specifies how many parallel Markov Chains we are running. Since we are running four chains we will have four $\pi$ values. The "iter' argument specifies the number of iterations or length for each chain. The first half of this iterations are thrown out as "burn in" samples. To keep our random results constant we utilize the seed argument within the stan() function. 
+We simulate the posterior using the stan() function. This function designs and runs an MCMC algorithm to produce an approximate sample from the Beta-Binomial posterior. The model code argument requires a string that defines the model. The data argument requires a list of observed data. The chains argument specifies how many parallel Markov Chains we are running. Since we are running four chains we will have four $\pi$ values. The "iter' argument specifies the number of iterations or length for each chain. The first half of this iterations are thrown out as "burn in" samples (samples that we use to calibrate our model). To keep our random results constant we utilize the seed argument within the stan() function. 
 
 ```{r, echo=FALSE, results='hide'}
 
@@ -113,7 +118,7 @@ bb_sim <- stan(model_code = bb_model, data = list(Y = 9),
                chains = 4, iter = 5000*2, seed = 84735)
 ```
 
-As you can see in Figure 1, when observing the distribution of the sampled $\pi$ values we approximate the target Beta(11,3) posterior model of $\pi$. The target pdf is superimposed in black. [@Alicia]
+As you can see in Figure 1, when observing the distribution of the sampled $\pi$ values we approximate the target Beta(11,3) posterior model of $\pi$. The target pdf is next to it. [@Alicia]
 
 ```{r, fig.width=3, fig.height= 3, fig.align='center'}
 # Histogram of the Markov chain values
@@ -125,10 +130,9 @@ mcmc_hist(bb_sim, pars = "pi") +
 p = seq(0, 1, length=100)
 mcmc_dens(bb_sim, pars = "pi") + 
   yaxis_text(TRUE) + 
-  ylab("density")+
-  plot(p, dbeta(p, 11, 3), type='l')
+  ylab("density")
 
-
+plot(p, y = dbeta(p, 11, 3), type='l')
 
 ```
 
@@ -342,18 +346,6 @@ median(mus)
 ```
 
 
-7. Find a 90% credible interval for $\mu$, and estimate the probability that $\mu > 2$.
-
-**ANSWER:**
-
-```{r posterior-inference, echo = T}
-# 90% credible interval
-quantile(mus, probs = c(0.05, 0.95))
-
-# P(mu > 2 | y)
-mean(mus > 2)
-```
-
 8. Create a *trace plot* showing the behavior of the samples over the $N$ iterations.
 
 **ANSWER:**
@@ -456,6 +448,8 @@ We can show that if $\theta^{(m-1)}\sim\pi(\theta)$, then, $\theta^{(m)}\sim\pi(
 ### Discussion
 
 Limitations, pro's, cons, alternatives. 
+
+
 
 
 
