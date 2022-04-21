@@ -1,0 +1,68 @@
+---
+title: "Law of Large Numbers Simulations"
+author: "Jiashu Liu"
+date: "April 20, 2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(ggplot2)
+library(scales)
+```
+
+```{r}
+#Coin Toss
+##Generate Data 
+tossCoin = function(n=40, p=0.5) {
+
+  # create a probability distribution, a vector of outcomes (H/T are coded using 0/1)
+  # and their associated probabilities
+  outcomes =  c(0,1)# sample space
+  probabilities = c(p,1-p)
+  
+  # create a random sample of n flips; this could also be done with
+  # the rbinom() function, but sample() is perhaps more useful
+  flips = sample(outcomes,n,replace=T,prob=probabilities)
+  
+  # now create a cumulative mean vector
+  cum_sum =   cumsum(flips)  #Hint: use cumsum() function
+  index = c(1:n)
+  cum_mean = cum_sum/index
+  
+  # now combine the index, flips and cum_mean vectors
+  # into a data frame and return it
+  return(data.frame(index,cum_mean))
+}
+```
+
+```{r}
+#Plot the Data 
+ggplotCoinTosses = function(n=40, p=.50) {
+  # visualize how cumulative average converges on p  
+  # roll the dice n times and calculate means
+  trial1 = tossCoin(n,p)
+  max_y = ceiling(max(trial1$cum_mean))
+  if (max_y < .75) max_y = .75 
+  min_y = floor(min(trial1$cum_mean))
+  if (min_y > .4) min_y = .4
+  
+  # calculate last mean and standard error
+  last_mean = round(trial1$cum_mean[n],9)
+  
+  # plot the results together
+  ggplot(trial1, aes(x = index, y = cum_mean)) +
+    geom_line()+
+    geom_hline(yintercept = p)
+  
+}  
+
+# call the function; let's use a fair coin (p=0.5)
+ggplotCoinTosses(n = 60, 0.6)
+ggplotCoinTosses(n = 70, 0.35)
+ggplotCoinTosses(n = 4000, 0.5)
+
+```

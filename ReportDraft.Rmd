@@ -390,9 +390,9 @@ $$Pr(Z,P\mid X) \propto Pr(Z) Pr(P)Pr(X\mid Z,P)$$ (1)
 
 Where $Pr(Z)$ and $Pr(P)$ are the priors and $Pr(X\mid Z,P)$ is the likelihood function of a genotype given a population and allele frequency. 
 
-We can't compute this distribution exactly but we can obtain an approximate sample $(Z^{(1)},P^{(1)}),(Z^{(2)},P^{(2)}), ...,(Z^{(M)},P^{(M)})$ from $Pr(Z,P\mid X)$ from $Pr(Z,P\mid X)$ using Gibbs Sampling. Inference for Z and P may be based on summary statistics obtained from this sample. We will focus on a simpler model where each person is assumed to have originated in a single population. 
+We can't compute this distribution exactly but we can obtain an approximate sample $(Z^{(1)},P^{(1)}),(Z^{(2)},P^{(2)}), ...,(Z^{(M)},P^{(M)})$ from $Pr(Z,P\mid X)$ using Gibbs Sampling. Inference for Z and P may be based on summary statistics obtained from this sample. We will focus on a simpler model where each person is assumed to have originated in a single population. 
 
-Suppose we sample N individuals with paired chromosomes (diploid). We assume each individual originates in one of K populations, each with its own characteristic set of allel frequencies. The vectors X (observed genotypes), Z (populations of origin of the individuals), and P (the unknown allele frequencies in the populations). These vectors consist of the following elements. 
+Suppose we sample N individuals with paired chromosomes (diploid). We assume each individual originates in one of K populations, each with its own characteristic set of allele frequencies. The vectors X (observed genotypes), Z (populations of origin of the individuals), and P (the unknown allele frequencies in the populations). These vectors consist of the following elements. 
 
 $$(x_l^{(i,1)}, x_l^{(i,2)}) = \text{genotype of the ith individual at the lth locus, where i= 1,2,...,N and l= 1,2,...,L;}$$
 $$Z^{(i)}= \text{population from which individual i originated}$$
@@ -410,7 +410,7 @@ independently for all individuals.
 
 When defining the prior $Pr(P)$ the authors used the Dirichlet distribution to model the distribution on allele frequencies $p= (p_1,p_2,...,p_J)$. These frequencies have the property that they sum up to 1. This distribution specifies the probability of a particular set of allele frequencies $p_{kl}$ for population k at locus l. 
 
-$$ Pr(P) = p_{kl}\sim D = (\lambda_1, \lambda_2,...,\lambda_J)\text{  (4)}$$
+$$ Pr(P) = p_{kl}\sim D = (\lambda_1, \lambda_2,...,\lambda_J)\text{  (5)}$$
 
 in dependently for each k,l. The expected frequency of allele j for a population k is proportional to $\lambda_j$, and the variance of this frequency decreases as the sum of the $\lambda_j$ pmf increases (as the sum of the pmf is closer to 1). The authors take $\lambda_1 = \lambda_2 = ... = \lambda_{Jl}=1.0$ which gives a uniform distribution on the allele frequencies allowing each $\lambda_j$ to be equally likely.  
 
@@ -449,7 +449,10 @@ We can show that if $\theta^{(m-1)}\sim\pi(\theta)$, then, $\theta^{(m)}\sim\pi(
 
 Limitations, pro's, cons, alternatives. 
 
-
+1. Hamiltonean vs Gibbs Sampling: 
+  Two main softwares: newer are Hamiltoneans, 
+  older: Gibbs sampling. 
+  RSTAN (HAMILTONEAN) vs RJAGS (GIBBS)
 
 
 
