@@ -457,5 +457,5 @@ Limitations, pro's, cons, alternatives.
 ### References 
 
 
-$$ P(X_{n+1} = x | X_n = x_n) $$
+$$ P(X_{n+1} = x_{n+1} | X_n = x_n) $$
 
