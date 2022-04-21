@@ -27,12 +27,17 @@ Fill in the code to construct an MCMC approximation of the Gamma-Poisson posteri
 
 $$Y_{i}\mid\lambda\stackrel{\text{ind}}{\sim} Pois(\lambda)$$
 $$\lambda \sim Gamma(3,1)$$
+
+# This plot represents our prior beliefs
+
 ```{r, echo=FALSE}
 plot_gamma(3,1)
 ```
 
 
 upon observing data $(Y_{1},Y_{2}) = (2,8)$. The code will require two terms you haven't seen, but you might guess how to use: poisson() and gamma(). Also, you code will incorporate a vector of $(Y_{1},Y_{2})$ variables and observations as opposed to a single variable Y. 
+
+# This plot shows our likelihood based on our two data points
 
 ```{r}
 plot_poisson_likelihood(5)
@@ -61,6 +66,7 @@ gp_model <- "
 #              chains = 4, iter = 10000, seed = 84735)
 ```
 
+# This plot updates our prior based on our data to form our posterior
 
 ```{r}
 plot_gamma_poisson(3,1,10,2)
