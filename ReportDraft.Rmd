@@ -42,7 +42,7 @@ plot_beta(alpha = 4, beta = 7)
 Likelihood is the distribution of the data. In this example the outcome variable is binary on whether the person was voted for or not. So we have a binomial distribution of the likelihood. [EXPLAIN WHAT THE GRPAHS ARE AND THE PURPOSE]
 
 ```{r}
-plot_binomial_likelihood(40,60)
+plot_binomial_likelihood(20,30)
 ```
 
 
@@ -459,3 +459,4 @@ Limitations, pro's, cons, alternatives.
 
 $$ P(X_{n+1} = x_{n+1} | X_n = x_n) $$
 
+$$Beta(\alpha + y, \beta + n - y) \\ Beta(10+20, 10+30-20)$$
