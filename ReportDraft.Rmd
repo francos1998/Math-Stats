@@ -84,7 +84,13 @@ We can say that the (i+1)st chain value $\theta^{(i+1)}$ has a conditional pdf $
 
 $$f(\theta^{(i+1)}|\theta^{(i)}, y)\ne f(\theta^{(i+1)}| y)$$
 
-We will conduct the MCMC simulation using the rstan package [@rstan]. There are two essential steps to all rstan analyses, first we define the Bayesian model structure and then simulate the posterior.We will use a Beta-Binomial example. 
+We will conduct the MCMC simulation using the rstan package [@rstan]. There are two essential steps to all rstan analyses, first we define the Bayesian model structure and then simulate the posterior.We will use a generical Beta-Binomial example: 
+
+$$Y\mid \pi \sim Bin(10,\pi)$$
+$$\pi \sim Beta(2,2)$$
+
+Where Y is the number of successes in 10 independent trials. Each trial has a probability of success $\pi$ where our prior for $\pi$ is captured by a $Beta(2,2)$ model. If we observe 9 successes we have an updated posterior model of $\pi$ with distribution $Beta(11,3)$. Don't worry about how we found this answer for the moment being. Our goal is to run an MCMC algorithm to produce an approximate sample from the Beta-binomial posterior. 
+
 
 ### STEP 1: DEFINE the model
 
