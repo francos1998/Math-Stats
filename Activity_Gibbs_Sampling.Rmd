@@ -44,9 +44,13 @@ plot_binomial_likelihood(y = 9,n = 10)
 
 ### STEP 1: DEFINE the model
 
+Observe there are 3 different elements of this code. You don't need to change anything, but we encourage you to identify the prior, posterior and parameters of the model in the code. 
+
 *Data*: Y is the observed number of success trials. We specify that Y is between 10 and 0. 
 *Parameters*: The model depends on $\pi$, therefore we must specify that $\pi$ can be any real number from 0 to 1.
 *Model*: We need to specify the model for the data and the model for the prior.
+
+
 
 ```{r, results='hide'}
 # STEP 1: DEFINE the model
@@ -73,9 +77,9 @@ bb_sim <- stan(model_code = bb_model, data = list(Y = 9),
                chains = 4, iter = 5000*2, seed = 84735)
 ```
 
-As you can see in Figure 1, when observing the distribution of the sampled $\pi$ values we approximate the target Beta(11,3) posterior model of $\pi$. The target pdf is next to it. [@Alicia]
+As you can see in Figure 1, when observing the distribution of the sampled $\pi$ values we approximate the target Beta(11,3) posterior model of $\pi$. The target pdf superimposed to our simulated model. Excellent! Know you know how to approximate a posterior using Markov Chains [@Alicia]
 
-```{r, fig.width=3, fig.height= 3, fig.align='center'}
+```{r}
 # Histogram of the Markov chain values
 mcmc_hist(bb_sim, pars = "pi") + 
   yaxis_text(TRUE) + 
@@ -88,15 +92,6 @@ mcmc_dens(bb_sim, pars = "pi") +
   ylab("density")+
   stat_function(fun = dbeta, args = list(11, 3)) 
 
-```
-
-
-
-
-# This plot updates our prior based on our data to form our posterior
-
-```{r}
-plot_beta_binomial(3,1,10,2)
 ```
 
 
@@ -157,77 +152,80 @@ $$
 
 **ANSWER:**
 
-$$
-\begin{aligned}
+$$\begin{aligned}
 g(\mu \mid y, \gamma) &\propto f(y \mid \mu, \gamma)f(\mu) \\
 &= \left[(2\pi)^{-\frac{1}{2}}\gamma^{\frac{1}{2}}e^{-\frac{1}{2}\gamma(y - \mu)^2} \right] \left[(2\pi v)^{-\frac{1}{2}}e^{-\frac{1}{2v}(\mu - m)^2} \right]\\
 & = \dots \\
 & = \propto e^{-\frac{1}{2\left(\gamma + \frac{1}{v}\right)^{-1}}\left[ \mu - \left(\frac{y \gamma + \frac{m}{v}}{\gamma + \frac{1}{v}}\right) \right]^2}
-\end{aligned}
-$$
+\end{aligned}$$
+
+
+$$\begin{aligned}
+g(\gamma \mid y, \mu) &\propto f(y \mid \mu, \gamma)f(\gamma) \\
+& = \left[(2\pi)^{-\frac{1}{2}}\gamma^{\frac{1}{2}}e^{-\frac{1}{2}\gamma(y - \mu)^2} \right] \left[\frac{b^a}{\Gamma(a)} \gamma^{a-1}e^{-b\gamma}\right]\\
+& ... \\
+& = \gamma^{\frac{1}{2} + a - 1}e^{-\gamma\left(\frac{1}{2}(y - \mu)^2 +b\right)} 
+\end{aligned}$$
 
 
 
 
 
 
-
-
-
-
-
-4. Suppose that we choose the following hyperparameters for our prior distributions---$m = 5, v = 5, a = 5, b = 5$---and that we observe $y = 10$. Write code to implement this Gibbs Sampler.
+4. Suppose that we choose the following hyperparameters for our prior distributions---$m = 0, v = 1, a = 1, b = 1$---and that we observe $y = 2$. Uncomment and complete the code to implement this Gibbs Sampler.
 
 **ANSWER:** 
 
 
 ```{r gibbs-setup, echo = T}
 # set up priors
-m <- 0
-v <- 1
-a <- 1
-b <- 1
+# m <- 
+# v <- 
+# a <- 
+# b <- 
 
 # set up data
-y <- 2
+# y <- 
 
 # choose starting values by randomly sampling from our priors
 # (this is just one possible way to choose starting values)
 # (it's also useful to try out a few different starting values)
-set.seed(1)
-mu <- rnorm(1, mean = m, sd = sqrt(v))
-gam <- rgamma(1, shape = a, rate = b)
+# set.seed(1)
+# mu <- rnorm(1, mean = m, sd = sqrt(v))
+# gam <- rgamma(1, shape = a, rate = b)
 
 # set up empty vectors to store samples
-mus <- c()
-gams <- c()
+# mus <- c()
+# gams <- c()
 
 # store starting values in vectors of samples
-mus[1] <- mu
-gams[1] <- gam
+# mus[1] <- mu
+# gams[1] <- gam
 ```
 
 ```{r run-gibbs, echo = T}
 # choose number of iterations
 # (we'll start with 100, but in practice you'd choose something much bigger)
-N <- 100
+# N <-  100
 
 # run through Gibbs Sampling for a total of N iterations
-for(i in 2:N){
-  # update mu
-  m1 <- y*gam + m/v
-  m2 <- gam + 1/v
-  mu <- rnorm(n = 1, mean = (m1)/(m2), sd = sqrt(1/m2))
-  
-  # update gamma
-  g1 <- 0.5 + a
-  g2 <- 0.5*(y-mu)^2 + b
-  gam <- rgamma(n = 1, shape = g1, rate = g2)
-  
-  # store new samples
-  mus[i] <- mu
-  gams[i] <- gam
-}
+# for(i in 2:N){
+#   # update mu
+#   numerator_for_mu <- y*gam + m/v
+#   denominator_for_mu <- gam + 1/v
+#   variance <- (1/denominator_for_mu)
+#   
+#   mu <- rnorm(n = 1, mean = (numerator_for_mu)/(denominator_for_mu), sd = sqrt(variance))
+#   
+#   # update gamma
+#   g1 <- (1.2) + a
+#   g2 <- (1/2)*(y-mu)^2 + b
+#   gam <- rgamma(n = 1, shape = g1, rate = g2)
+#   
+#   # store new samples
+#   mus[i] <- mu
+#   gams[i] <- gam
+# }
 ```
 
 
@@ -236,13 +234,13 @@ for(i in 2:N){
 **ANSWER:**
 
 ```{r histograms, echo = T, fig.height = 3}
-par(mfrow=c(1,3))
-hist(mus, xlab = expression(mu), main = '')
-hist(gams, xlab = expression(gamma), main = '')
-hist(1/gams, xlab = expression(paste(sigma^2,'=',1/gamma)), main = '')
+# par(mfrow=c(1,3))
+# hist(mus, xlab = expression(mu), main = '')
+# hist(gams, xlab = expression(gamma), main = '')
+# hist(1/gams, xlab = expression(paste(sigma^2,'=',1/gamma)), main = '')
 ```
 
-6. Estimate the posterior mean and median of $\mu$.
+6. Estimate the posterior mean and median of $\mu$. Find what the right parameters is for the mean and median functions below.
 
 **ANSWER:**
 
@@ -256,7 +254,7 @@ hist(1/gams, xlab = expression(paste(sigma^2,'=',1/gamma)), main = '')
 
 
 
-8. Ucomment the code to create a *trace plot* showing the behavior of the samples over the $N$ iterations.Describe what these trace plots tell us.
+8. Ucomment the code to create a *trace plot* showing the behavior of the samples over the $N$ iterations.Describe what these trace plots tell us, do you think this is a good chain? 
 
 **ANSWER:**
 
