@@ -88,8 +88,6 @@ mcmc_dens(bb_sim, pars = "pi") +
   ylab("density")+
   stat_function(fun = dbeta, args = list(11, 3)) 
 
-plot(p, y = dbeta(p, 11, 3), type='l')
-
 ```
 
 
