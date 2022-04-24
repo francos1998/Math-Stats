@@ -47,7 +47,9 @@ plot_binomial_likelihood(y = 9,n = 10)
 Observe there are 3 different elements of this code. You don't need to change anything, but we encourage you to identify the prior, posterior and parameters of the model in the code. 
 
 *Data*: Y is the observed number of success trials. We specify that Y is between 10 and 0. 
+
 *Parameters*: The model depends on $\pi$, therefore we must specify that $\pi$ can be any real number from 0 to 1.
+
 *Model*: We need to specify the model for the data and the model for the prior.
 
 
@@ -70,14 +72,24 @@ bb_model <- "
 
 ### STEP 2: Simulate the posterior
 
-We simulate the posterior using the stan() function. This function designs and runs an MCMC algorithm to produce an approximate sample from the Beta-Binomial posterior. The model code argument requires a string that defines the model. The data argument requires a list of observed data. The chains argument specifies how many parallel Markov Chains we are running. Since we are running four chains we will have four $\pi$ values. The "iter' argument specifies the number of iterations or length for each chain. The first half of this iterations are thrown out as "burn in" samples (samples that we use to calibrate our model). To keep our random results constant we utilize the seed argument within the stan() function. 
+We simulate the posterior using the stan() function. This function designs and runs an MCMC algorithm to produce an approximate sample from the Beta-Binomial posterior. 
+The *model_code* argument requires a string that defines the model. 
 
-```{r, echo=FALSE, results='hide'}
-bb_sim <- stan(model_code = bb_model, data = list(Y = 9), 
-               chains = 4, iter = 5000*2, seed = 84735)
+The *data* argument requires a list of observed data. 
+The *chains* argument specifies how many parallel Markov Chains we are running. Since we are running four chains we will have four $\pi$ values. 
+The *iter* argument specifies the number of iterations or length for each chain. The first half of this iterations are thrown out as "burn in" samples (samples that we use to calibrate our model). 
+
+We utilize the *seed* argument within the stan() function to keep our random results constant. 
+
+```{r, echo=FALSE}
+bb_sim <- stan(model_code = bb_model, #model_code argument
+               data = list(Y = 9),  # data argument
+               chains = 4, #we are running four chains
+               iter = 5000*2, #number of iterations or length for each chain
+               seed = 84735) #keep our random results constant
 ```
 
-As you can see in Figure 1, when observing the distribution of the sampled $\pi$ values we approximate the target Beta(11,3) posterior model of $\pi$. The target pdf superimposed to our simulated model. Excellent! Know you know how to approximate a posterior using Markov Chains [@Alicia]
+As you can see in Figure 1, when observing the distribution of the sampled $\pi$ values we approximate the target Beta(11,3) posterior model of $\pi$. The target pdf superimposed to our simulated model. Excellent! Now you know how to approximate a posterior using Markov Chains [@Alicia].
 
 ```{r}
 # Histogram of the Markov chain values
