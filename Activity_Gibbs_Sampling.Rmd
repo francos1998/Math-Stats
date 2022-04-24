@@ -89,7 +89,7 @@ bb_sim <- stan(model_code = bb_model, #model_code argument
                chains = 4, #we are running four chains
                iter = 5000*2, #number of iterations or length for each chain
                seed = 84735) #keep our random results constant
-=======
+
 We simulate the posterior using the stan() function. This function designs and runs an MCMC algorithm to produce an approximate sample from the Beta-Binomial posterior. The model code argument requires a string that defines the model. The data argument requires a list of observed data. The chains argument specifies how many parallel Markov Chains we are running. Since we are running four chains we will have four $\pi$ values. The "iter' argument specifies the number of iterations or length for each chain. The first half of this iterations are thrown out as "burn in" samples (samples that we use to calibrate our model). To keep our random results constant we utilize the seed argument within the stan() function. 
 
 ```{r, echo=FALSE, results='hide'}
