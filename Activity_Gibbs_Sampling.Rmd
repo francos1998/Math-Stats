@@ -30,15 +30,15 @@ $$\pi \sim Beta(2,2)$$
 
 Where Y is the number of successes in 10 independent trials. Each trial has a probability of success $\pi$ where our prior for $\pi$ is captured by a $Beta(2,2)$ model. If we observe 9 successes we have an updated posterior model of $\pi$ with distribution $Beta(11,3)$. Don't worry about how we arrived to this posterior for the moment being. Keep in mind our goal is to run an MCMC algorithm to produce an approximate sample from the Beta-binomial posterior $Beta(11,3)$. 
 
-# This plot represents our prior beliefs
+### This plot represents our prior beliefs
 
-```{r, echo=FALSE}
+```{r, out.width='40%'}
 plot_beta(2,2)
 ```
 
-# This plot shows our likelihood based on our two data points
+### This plot shows our likelihood based on our two data points
 
-```{r}
+```{r, out.width='40%'}
 plot_binomial_likelihood(y = 9,n = 10)
 ```
 
