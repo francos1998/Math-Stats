@@ -373,7 +373,7 @@ plot(1/gams ~ iterations, xlab = 'Iteration', ylab = expression(sigma^2), type =
 
 ### Real World Application
 
-Gibbs sampling has been used in the inference of population structure using multilocus genotype data [@Pritchard]. In other words, to infer the population of an individual using their genetic information. I will start defining some of the most important terms in the paper. A locus is the specific physical location of a gene or other DNA sequence on a chromosome, like a genetic street address. A genotype is the pair of alleles inherited from each parent for a particular gene, where an allele is a variation of a gene and a gene is the functional unit of heredity. For example, if a gene contains information on hair color one allele might code for brown and other for blond, a genotype would be the pair of alleles one coded for brown and the other for blond hair. 
+Gibbs sampling has been used in the inference of population structure using multilocus genotype data [@Pritchard]. In other words, to infer the population of an individual using their genetic information. I will start defining some of the most important terms in the paper. A locus is the specific physical location of a gene or other DNA sequence on a chromosome, like a genetic street address. A genotype is the pair of alleles inherited from each parent for a particular gene, where an allele is a variation of a gene and a gene is the functional unit of heredity. For example, if a gene contains information on hair color one allele might code for brown and other for blond, a genotype would be the pair of alleles one coded for brown and the other for blond hair located at a specific locus. 
 
 Assuming that each population is modeled by a characteristic set of allele frequencies, let X represent the genotypes of the sampled individuals, Z the populations of origin of individuals, and P the allele frequencies in all populations. Each allele at each locus in each genotype is an independent draw from the appropriate frequency distribution. This specifies the probability distribution $Pr(X\mid Z,P)$. Which is the probability that we draw a specific genotype given the population of origin of an individual and the allele frequency in a population. 
 
@@ -424,12 +424,10 @@ Then the authors proceed to apply the Gibbs Sampling algorithm which can be desc
 
 Considering that our conditional distributions are
 
-$$P(Z\mid X,P) \propto f(X \mid Z,P) f(Z)$$ 
+$$Pr(Z\mid X,P) \propto f(X \mid Z,P) f(Z)$$ 
 
 And, 
-$$P(P\mid X,Z) \propto f(X \mid Z,P) f(P)$$ 
-
-
+$$Pr(P\mid X,Z) \propto f(X \mid Z,P) f(P)$$ 
 
 we can construct a Markov chain with stationary (target) multinomial distribution $Pr(Z,P\mid X)$ as follows: 
 
@@ -437,7 +435,7 @@ we can construct a Markov chain with stationary (target) multinomial distributio
 Starting with the initial value $Z^{(0)}$ for Z (chosen randomly) we iterate over the following steps for m=1,2,....
 
 Step 1. Sample $P^{(m)}$ from $Pr(P \mid X,Z^{(m-1)})$
-Step 1. Sample $Z^{(m)}$ from $Pr(Z \mid X,P^{(m)})$
+Step 2. Sample $Z^{(m)}$ from $Pr(Z \mid X,P^{(m)})$
 
 In step 1 we are estimating allele frequencies for each population given our sampled genotype and assuming that the population of origin of each individual is known. In step 2 we estimate the population of origin of each individual, given our sampled genotype and assuming that the population's allele frequencies are known. For sufficiently large m and c, $(Z^{(m)}, P^{(m)}), (Z^{(m+c)}, P^{(m+c)}),(Z^{(m+2c)}, P^{(m+2c)}),...$ will be approximately independent random samples from $Pr(Z,P \mid X)$
 
