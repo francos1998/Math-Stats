@@ -352,7 +352,7 @@ median(mus)
 ```
 
 
-8. Create a *trace plot* showing the behavior of the samples over the $N$ iterations.
+7. Create a *trace plot* showing the behavior of the samples over the $N$ iterations.
 
 **ANSWER:**
 
@@ -367,7 +367,7 @@ plot(1/gams ~ iterations, xlab = 'Iteration', ylab = expression(sigma^2), type =
 
 
 
-9. As mentioned above, in practice we usually pick a burn-in period of initial iterations to remove. This decision is often motivated by the fact that, depending on your choice of starting value, it may take awhile for your chain of samples to look like it is "mixing" well. Play around with your choice of starting value above to see if you can find situations in which a burn-in period might be helpful. 
+As mentioned above, in practice we usually pick a burn-in period of initial iterations to remove. This decision is often motivated by the fact that, depending on your choice of starting value, it may take awhile for your chain of samples to look like it is "mixing" well. Play around with your choice of starting value above to see if you can find situations in which a burn-in period might be helpful. 
 
 ##Discussion
 
@@ -403,7 +403,7 @@ Where $Pr(Z)$ and $Pr(P)$ are the priors and $Pr(X\mid Z,P)$ is the likelihood f
 
 We can't compute this distribution exactly but we can obtain an approximate sample $(Z^{(1)},P^{(1)}),(Z^{(2)},P^{(2)}), ...,(Z^{(M)},P^{(M)})$ from $Pr(Z,P\mid X)$ using Gibbs Sampling. Inference for Z and P may be based on summary statistics obtained from this sample. We will focus on a simpler model where each person is assumed to have originated in a single population. 
 
-Suppose we sample N individuals with paired chromosomes (diploid). We assume each individual originates in one of K populations, each with its own characteristic set of allele frequencies. The vectors X (observed genotypes), Z (populations of origin of the individuals), and P (the unknown allele frequencies in the populations). These vectors consist of the following elements. 
+Suppose we sample N individuals with paired chromosomes (diploid). We assume each individual originates in one of K populations, each with its own characteristic set of allele frequencies. We will use the vectors X (observed genotypes), Z (populations of origin of the individuals), and P (the unknown allele frequencies in the populations). These vectors consist of the following elements. 
 
 $$(x_l^{(i,1)}, x_l^{(i,2)}) = \text{genotype of the ith individual at the lth locus, where i= 1,2,...,N and l= 1,2,...,L;}$$
 $$Z^{(i)}= \text{population from which individual i originated}$$
@@ -423,18 +423,16 @@ When defining the prior $Pr(P)$ the authors used the Dirichlet distribution to m
 
 $$ Pr(P) = p_{kl}\sim D = (\lambda_1, \lambda_2,...,\lambda_J)\text{  (5)}$$
 
-in dependently for each k,l. The expected frequency of allele j for a population k is proportional to $\lambda_j$, and the variance of this frequency decreases as the sum of the $\lambda_j$ pmf increases (as the sum of the pmf is closer to 1). The authors take $\lambda_1 = \lambda_2 = ... = \lambda_{Jl}=1.0$ which gives a uniform distribution on the allele frequencies allowing each $\lambda_j$ to be equally likely.  
+in dependently for each k,l. The expected frequency of allele j for a population k is proportional to $\lambda_j$, and the variance of this frequency decreases as the sum of the Probability Mass Function (PMF) of $\lambda_j$  increases (as the sum of the PMF is closer to 1). The authors take $\lambda_1 = \lambda_2 = ... = \lambda_{Jl}=1.0$ which gives a uniform distribution on the allele frequencies allowing each $\lambda_j$ to be equally likely.  
 
-Then the authors proceed to apply the Gibbs Sampling algorithm which can be described as follows. 
+The authors used the following conditional distributions, 
 
-Considering that our conditional distributions are
-
-$$Pr(Z\mid X,P) \propto f(X \mid Z,P) f(Z)$$ 
+$$Pr(Z\mid X,P) \propto Pr(X \mid Z,P) Pr(Z)$$ 
 
 And, 
-$$Pr(P\mid X,Z) \propto f(X \mid Z,P) f(P)$$ 
+$$Pr(P\mid X,Z) \propto Pr(X \mid Z,P) Pr(P)$$ 
 
-we can construct a Markov chain with stationary (target) multinomial distribution $Pr(Z,P\mid X)$ as follows: 
+which are composed by a combination of the data $f(X \mid Z,P)$ and the priors $Pr(P)$ $Pr(Z)$ we defined previously. We can see that by using these conditional distributions we can make our problem easier by dealing with one parameter at a time. After, defining the conditional distributions we can construct a Markov chain with stationary (target) multinomial distribution $Pr(Z,P\mid X)$ as follows: 
 
 
 Starting with the initial value $Z^{(0)}$ for Z (chosen randomly) we iterate over the following steps for m=1,2,....
@@ -442,22 +440,11 @@ Starting with the initial value $Z^{(0)}$ for Z (chosen randomly) we iterate ove
 Step 1. Sample $P^{(m)}$ from $Pr(P \mid X,Z^{(m-1)})$
 Step 2. Sample $Z^{(m)}$ from $Pr(Z \mid X,P^{(m)})$
 
-In step 1 we are estimating allele frequencies for each population given our sampled genotype and assuming that the population of origin of each individual is known. In step 2 we estimate the population of origin of each individual, given our sampled genotype and assuming that the population's allele frequencies are known. For sufficiently large m and c, $(Z^{(m)}, P^{(m)}), (Z^{(m+c)}, P^{(m+c)}),(Z^{(m+2c)}, P^{(m+2c)}),...$ will be approximately independent random samples from $Pr(Z,P \mid X)$
-
-To be more specific, setting $\theta = (\theta_1,\theta_2) = (Z,P)$ and letting $\pi(Z,P) = Pr(Z,P\mid X)$, and starting with initial values $\theta^{(0)} = (\theta_1^{(0)},...,\theta_r^{(0)})$, we iterate the following steps for $m= 1,2,...$
-
-Step 1. Sample $\theta_{1}^{(m)}$ from $\pi(\theta_1\mid\theta_2^{(m-1)}, \theta_3^{(m-1)},...,\theta_r^{(m-1)})$
-
-Step 2. Sample $\theta_{2}^{(m)}$ from $\pi(\theta_2\mid\theta_1^{(m)}, \theta_3^{(m-1)},...,\theta_r^{(m-1)})$
-
-Step r. Sample $\theta_{r}^{(m)}$ from $\pi(\theta_r\mid\theta_1^{(m)}, \theta_2^{(m)},...,\theta_r^{(m)})$
-
-We can show that if $\theta^{(m-1)}\sim\pi(\theta)$, then, $\theta^{(m)}\sim\pi(\theta)$, and so $\pi(\theta)$ is the stationary distribution of this Markov chain. 
-
+In step 1 we are estimating allele frequencies for each population given our sampled genotype and assuming that the population of origin of each individual is known. In step 2 we estimate the population of origin of each individual, given our sampled genotype and assuming that the population's allele frequencies are known. For sufficiently large m and c, $(Z^{(m)}, P^{(m)}), (Z^{(m+c)}, P^{(m+c)}),(Z^{(m+2c)}, P^{(m+2c)}),...$ will be approximately independent random samples from our posterior $Pr(Z,P \mid X)$.  
 
 ## Conclusion 
 
-
+Gibbs sampling is a distribution approximation method suitable for problems were we are trying to estimate more than one parameter. It's a variation of the Metropolis-Hastings algorithm were we sample alternatively from conditional distributions until we approximate our posterior. Like other MCMC methods, it's based on the idea of creating chains of values, where for each chain we sample from models dependent on the value of the previous chain. Computationally it's more efficient when we work with conjugate priors; however, overall there has been a greater preference for Hamiltonian software algorithms that are suitable for more complex models. Gibbs sampling is the best choice in specific conditions that are portrayed by the genetics application described earlier, where we have a conjugate Dirichlet prior, and where working with one parameter at a time is considerably easier.  
 
 
 
