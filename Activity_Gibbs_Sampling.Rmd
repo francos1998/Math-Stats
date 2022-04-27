@@ -228,53 +228,53 @@ $$\implies \gamma \mid y, \mu \sim \text{Gamma}\left(\frac{1}{2} + a, \frac{1}{2
 
 ```{r gibbs-setup, echo = T}
 # set up priors
-# m <- 
-# v <- 
-# a <- 
-# b <- 
+m <-0
+v <-1
+a <-1
+b <-1
 
 # set up data
-# y <- 
+ y <- 2
 
 # choose starting values by randomly sampling from our priors
 # (this is just one possible way to choose starting values)
 # (it's also useful to try out a few different starting values)
-# set.seed(1)
-# mu <- rnorm(1, mean = m, sd = sqrt(v))
-# gam <- rgamma(1, shape = a, rate = b)
+set.seed(1)
+mu <- rnorm(1, mean = m, sd = sqrt(v))
+gam <- rgamma(1, shape = a, rate = b)
 
 # set up empty vectors to store samples
-# mus <- c()
-# gams <- c()
+mus <- c()
+gams <- c()
 
 # store starting values in vectors of samples
-# mus[1] <- mu
-# gams[1] <- gam
+mus[1] <- mu
+gams[1] <- gam
 ```
 
 ```{r run-gibbs, echo = T}
 # choose number of iterations
 # (we'll start with 100, but in practice you'd choose something much bigger)
-# N <-  100
+N <-  100
 
 # run through Gibbs Sampling for a total of N iterations
-# for(i in 2:N){
-#   # update mu
-#   numerator_for_mu <- y*gam + m/v
-#   denominator_for_mu <- gam + 1/v
-#   variance <- (1/denominator_for_mu)
-# 
-#   mu <- rnorm(n = 1, mean = (numerator_for_mu)/(denominator_for_mu), sd = sqrt(variance))
-# 
-#   # update gamma
-#   g1 <- (1.2) + a
-#   g2 <- (1/2)*(y-mu)^2 + b
-#   gam <- rgamma(n = 1, shape = g1, rate = g2)
-# 
-#   # store new samples
-#   mus[i] <- mu
-#   gams[i] <- gam
-# }
+for(i in 2:N){
+  # update mu
+  numerator_for_mu <- y*gam + m/v
+  denominator_for_mu <- gam + 1/v
+  variance <- (1/denominator_for_mu)
+
+  mu <- rnorm(n = 1, mean = (numerator_for_mu)/(denominator_for_mu), sd = sqrt(variance))
+
+  # update gamma
+  g1 <- (1.2) + a
+  g2 <- (1/2)*(y-mu)^2 + b
+  gam <- rgamma(n = 1, shape = g1, rate = g2)
+
+  # store new samples
+  mus[i] <- mu
+  gams[i] <- gam
+}
 ```
 
 
@@ -283,10 +283,10 @@ $$\implies \gamma \mid y, \mu \sim \text{Gamma}\left(\frac{1}{2} + a, \frac{1}{2
 **ANSWER:**
 
 ```{r histograms, echo = T, fig.height = 3}
-# par(mfrow=c(1,3))
-# hist(mus, xlab = expression(mu), main = '')
-# hist(gams, xlab = expression(gamma), main = '')
-# hist(1/gams, xlab = expression(paste(sigma^2,'=',1/gamma)), main = '')
+par(mfrow=c(1,3))
+hist(mus, xlab = expression(mu), main = '')
+hist(gams, xlab = expression(gamma), main = '')
+hist(1/gams, xlab = expression(paste(sigma^2,'=',1/gamma)), main = '')
 ```
 
 6. Estimate the posterior mean and median of $\mu$. Find what the right parameters is for the mean and median functions below.
@@ -295,10 +295,10 @@ $$\implies \gamma \mid y, \mu \sim \text{Gamma}\left(\frac{1}{2} + a, \frac{1}{2
 
 ```{r posterior-summaries}
 # posterior mean
-# mean()
+mean(mus)
 
 # posterior median
-# median()
+median(mus)
 ```
 
 
@@ -308,12 +308,12 @@ $$\implies \gamma \mid y, \mu \sim \text{Gamma}\left(\frac{1}{2} + a, \frac{1}{2
 **ANSWER:**
 
 ```{r trace-plots}
-# iterations <- 1:N
+iterations <- 1:N
 
-# par(mfrow=c(1,3))
-# plot(mus ~ iterations, xlab = 'Iteration', ylab = expression(mu), type = 'l')
-# plot(gams ~ iterations, xlab = 'Iteration', ylab = expression(gamma), type = 'l')
-# plot(1/gams ~ iterations, xlab = 'Iteration', ylab = expression(sigma^2), type = 'l')
+par(mfrow=c(1,3))
+plot(mus ~ iterations, xlab = 'Iteration', ylab = expression(mu), type = 'l')
+plot(gams ~ iterations, xlab = 'Iteration', ylab = expression(gamma), type = 'l')
+plot(1/gams ~ iterations, xlab = 'Iteration', ylab = expression(sigma^2), type = 'l')
 
 ```
 
