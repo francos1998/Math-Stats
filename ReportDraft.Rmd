@@ -9,6 +9,8 @@ library(bayesrules)
 library(rstan)
 library(bayesplot)
 ```
+
+
 # Introduction
 
 Using Bayesian statistics we can incorporate prior knowledge into the estimation of our unknown parameters. We incorporate our prior knowledge of the unknown parameter through a prior distribution. Then, we will update our beliefs about $\theta$ with observed data and we will end up with what we call a posterior distribution. We will use the posterior to estimate the parameters of interest. Gibbs sampling is a type of Markov Chain Monte Carlo sampling that approximates posterior distributions when we can't sample from the posterior distributions directly. This method is an alternative to Metropolis-Hastings. In a nutshell, Gibbs sampling is  a method that samples from separate conditional distributions and is most useful when the joint posterior distribution is unknown or hard to sample from. Each event is dependent on the last event; and it is only dependent on the last event (like in a standard Markov Chain).
