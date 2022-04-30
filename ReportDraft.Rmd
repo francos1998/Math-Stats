@@ -334,7 +334,7 @@ gams[1] <- gam
 ```{r run-gibbs, echo = T}
 # choose number of iterations
 # (we'll start with 100, but in practice you'd choose something much bigger)
-N <- 100
+N <- 1000
 
 # run through Gibbs Sampling for a total of N iterations
 for(i in 2:N){
@@ -391,7 +391,7 @@ plot(gams ~ iterations, xlab = 'Iteration', ylab = expression(gamma), type = 'l'
 plot(1/gams ~ iterations, xlab = 'Iteration', ylab = expression(sigma^2), type = 'l')
 ```
 
-
+Sucessful trace plots cover the range of values in our distributions. It is important that trace plots are not stuck on one value, otherwise the distribution will not be accurate
 
 As mentioned above, in practice we usually pick a burn-in period of initial iterations to remove. This decision is often motivated by the fact that, depending on your choice of starting value, it may take awhile for your chain of samples to look like it is "mixing" well. Play around with your choice of starting value above to see if you can find situations in which a burn-in period might be helpful. 
 
