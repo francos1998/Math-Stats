@@ -90,13 +90,12 @@ As these graphs illustrate, a change in our prior beliefs will affect the poster
 ## Monte Carlo https://towardsdatascience.com/an-overview-of-monte-carlo-methods-675384eb1694
 Monte Carlo simulations randomly sample points within a region to approximate a distribution. The example above is a simple illusion of a uniform distribution for an estimate for $\pi$. This samples the proportion of points within the square region that fall within the circle's bounds. The proportion would be equal to $\frac{\pi}{4}$ since we are only interested in one fourth of the circle. As we sample more, our estimation for $\pi$ gets closer to the actual distribution. This is due to the Central Limit Theorem. Monte Carlo simulations work well when the posterior distribution is easy to sample from. However, it is not always possible to sample from the posterior distribution, nor is it always efficient. 
 
+![an image caption Source: From Towards Data Science an Overview of Monte Carlo](MC.png)
+
+
 ## Markov Chains
 
 Markov Chains are an example of a random walk. Random walks are a series of random moves through space in succession. Random walks use a combination of past events in the probability to determine the next step. Markov Chains are a special case in which only the previous step/location is used to determine the probability distribution of the next step. The following notation represents this process $P(X_{n+1} = x | X_n = x_n)$ meaning the probability distribution of move n+1 is only conditioned on the result of the previous move n. It is important to talk about the fact that Markov Chains are dependent on the previous move and are not an independent event. 
-
-
-[NEED A PICTURE]
-
 
 
 ## Gibbs Sampling Overview
