@@ -24,13 +24,14 @@ Gibbs sampling is a useful algorithm for Bayesian estimation. We think that inco
 
 ## Bayesian Statistics
 
-Bayesian Statistics is a different philosophy of statistics. Most statistical modeling that people use are under the frequentist school of thought. Frequentists methods depend only on the observed data. This means that interpretations and inference can only be from the sample that was studied or collected. Bayesian methods incorporate prior beliefs into the model before the data is received.
+Bayesian Statistics is a dfferent philosophy of statistics. Most statistical modeling that people use are under the frequentest school of thought. Frequentest methods depend only on the observed data. This means that interpretations and inference can only be from the sample that was studied or collected. Bayesian methods incorporate prior beliefs into the model before the data is received.
 
 ### Example 1
 
-[EXPLAIN EXAMPLE, EXPLAIN WHAT DOES IT MEAN THAT IT HAS BETA PRIOR]
+We have prior information regarding an upcoming election.
+The first example shows how our priors affect posteriors in an election. Below we show for different priors for candidates. Aaron will be represented by alpha and Brynn will be represented by beta. 
+We parameterize our priors in a beta distribution $Beta(\alpha,\beta)$ between [0,1]. Beta distributions represent the probability. 
 Prior: A prior is a probability distribution that shows our beliefs before any data is taken into account. A common distribution used for a prior is a beta model. Priors incorporate both the mean and the variance of your previous beliefs about the data. Priors with a greater spread indicate a less confident belief.
-<<<<<<< HEAD
 
 ### First Prior
 $Beta(1,1)$ This is the same as the uniform distribution between [0,1]. We have no prior beliefs about how the election will take place. This is not realisitic as there is always unlikely that someone will receive all of the votes or none of the votes
@@ -47,9 +48,6 @@ This prior favors Brynn. The mean probability is .36, with the mode at .33. This
 
 Prior: A prior is a probability distribution that shows our beliefs before any data is taken into account. A common distribution used for a prior is a beta model. Priors incorporate both the mean and the variance of your previous beliefs about the data. Priors with a greater spread indicate a less confident belief.
 
-=======
-[EXPLAIN WHAT YOU ARE DOING HERE WITH THIS GRAPHS]
->>>>>>> 583244b5ea16e785402f10d54556c6cb1db55619
 
 ```{r,out.width='50%',fig.align='center'}
 plot_beta(alpha = 1, beta = 1)
@@ -60,7 +58,7 @@ plot_beta(alpha = 4, beta = 7)
 
 
 
-Likelihood is the distribution of the data. In this example the outcome variable is binary on whether the person was voted for or not. So we have a binomial distribution of the likelihood. [EXPLAIN WHAT THE GRPAHS ARE AND THE PURPOSE]
+Likelihood is the distribution of the data. In this example the outcome variable is binary on whether the person was voted for or not. So we have a binomial distribution of the likelihood. The graph below plots the density distribution of the binomial outcome. Aaron recieved 20 out of 30 votes in the exit survey we conducted. 
 
 ```{r,out.width='50%',fig.align='center'}
 plot_binomial_likelihood(20,30)
@@ -69,7 +67,6 @@ plot_binomial_likelihood(20,30)
 
 Posterior
 The posterior is simply a combination of the prior and data. In this case we conveniently chose conjugate distribution in which the prior and posterior share the same distribution. We combine our data with our prior model to form the posterior distribution. As more data is incorporated more weight shifts to the data from the prior. 
-<<<<<<< HEAD
 
 Each graph incorporates the same data into their respective distribution. We will now use the exit survey to update our beliefs on the final result of the election.
 
@@ -84,9 +81,6 @@ Our data reinforces our prior that Aaron has around a .67 probability of winning
 
 ### Fourth Posterior
 This represents our largest shift. Our prior favored Brynn, but with the significantyl different data
-=======
-[EXPLAIN WHAT THE GRPAHS ARE AND THE PURPOSE]
->>>>>>> 583244b5ea16e785402f10d54556c6cb1db55619
 
 
 ```{r,out.width='50%',fig.align='center'}
@@ -96,19 +90,19 @@ plot_beta_binomial(alpha = 7, beta = 4, y = 20, n= 30)
 plot_beta_binomial(alpha = 4, beta = 7, y = 20, n= 30)
 ```
 
+As these graphs illustrate, a change in our prior beliefs will affect the posterior, even with the same data.
 
 
 ## Monte Carlo https://towardsdatascience.com/an-overview-of-monte-carlo-methods-675384eb1694
-
 Monte Carlo simulations randomly sample points within a region to approximate a distribution. The example above is a simple illusion of a uniform distribution for an estimate for $\pi$. This samples the proportion of points within the square region that fall within the circle's bounds. The proportion would be equal to $\frac{\pi}{4}$ since we are only interested in one fourth of the circle. As we sample more, our estimation for $\pi$ gets closer to the actual distribution. This is due to the Central Limit Theorem. Monte Carlo simulations work well when the posterior distribution is easy to sample from. However, it is not always possible to sample from the posterior distribution, nor is it always efficient. 
+
+![an image caption Source: From Towards Data Science an Overview of Monte Carlo](MC.png)
+This image illustrates a Monte Carlo simulation of 1/4 of circle to sample for $\pi$ . It is important to note some of the key qualities in this simulation. As n increases, the more accurate our simulation becomes. It is also important that the area that we are sampling from is known and easy to sample from. One reason we use MCMC sampling is because our distribution is hard to sample from. 
+
 
 ## Markov Chains
 
 Markov Chains are an example of a random walk. Random walks are a series of random moves through space in succession. Random walks use a combination of past events in the probability to determine the next step. Markov Chains are a special case in which only the previous step/location is used to determine the probability distribution of the next step. The following notation represents this process $P(X_{n+1} = x | X_n = x_n)$ meaning the probability distribution of move n+1 is only conditioned on the result of the previous move n. It is important to talk about the fact that Markov Chains are dependent on the previous move and are not an independent event. 
-
-
-[NEED A PICTURE]
-
 
 
 ## Gibbs Sampling Overview
@@ -157,7 +151,6 @@ bb_model <- "
 We simulate the posterior using the stan() function. This function designs and runs an MCMC algorithm to produce an approximate sample from the Beta-Binomial posterior. The model code argument requires a string that defines the model. The data argument requires a list of observed data. The chains argument specifies how many parallel Markov Chains we are running. Since we are running four chains we will have four $\pi$ values. The "iter' argument specifies the number of iterations or length for each chain. The first half of this iterations are thrown out as "burn in" samples (samples that we use to calibrate our model). To keep our random results constant we utilize the seed argument within the stan() function. 
 
 ```{r, echo=FALSE, results='hide'}
-
 bb_sim <- stan(model_code = bb_model, data = list(Y = 9), 
                chains = 4, iter = 5000*2, seed = 84735)
 ```
@@ -169,15 +162,12 @@ As you can see in Figure 1, when observing the distribution of the sampled $\pi$
 mcmc_hist(bb_sim, pars = "pi") + 
   yaxis_text(TRUE) + 
   ylab("count")
-
 # Density plot of the Markov chain values
 p = seq(0, 1, length=100)
 mcmc_dens(bb_sim, pars = "pi") + 
   yaxis_text(TRUE) + 
   ylab("density")
-
 plot(p, y = dbeta(p, 11, 3), type='l')
-
 ```
 
 # Metropolis-Hastings algorithm
@@ -193,27 +183,27 @@ There are special cases of the Metropolis-Hastings that involve a different samp
 
 Example from [Youtube](https://www.youtube.com/watch?v=ER3DDBFzH2g)
 
-We start with an example of two random variables $A, B$ with a Bernoulli distribution. 
-We now find their conditional distributions
+We start with an example of two random variables $x, y$ with a Bernoulli distribution. 
+We now find their conditional distributions. This process is a simplified version of what is done in all forms of Gibbs Sampling. By understanding the steps below, one will be able to understand the concepts behind more complex distributions.
 
-$$P(A|B = 0) \in P(A=1) = \frac{4}{5} \space , P(A = 0) = \frac{1}{5} $$
+$$P(x|y = 0) \in P(x=1) = \frac{4}{5} \space , P(x = 0) = \frac{1}{5} $$
 
-$$P(A|B = 1) \in P(A=1) = \frac{2}{5} \space , P(A = 0) = \frac{3}{5} $$
+$$P(x|y = 1) \in P(x=1) = \frac{2}{5} \space , P(x = 0) = \frac{3}{5} $$
 $$P(B|A = 0) \in P(B=1) = \frac{3}{4} \space , P(B = 0) = \frac{1}{4} $$
 
-$$P(B|A = 1) \in P(B=1) = \frac{1}{3} \space , P(B = 0) = \frac{2}{3} $$
+$$P(y|x = 1) \in P(y=1) = \frac{1}{3} \space , P(y = 0) = \frac{2}{3} $$
 
 1. Pick specific starting value of $(x_0,y_0)$ 
-Here we pick $(A_0),(B_0)$
-2. Condition on $B_0$
-3. Your distribution is now $P(A=0) = 1/5$ and $ P(A= 1) = 4/5$
+Here we pick $(x=0),(y=0)$
+2. Condition on $y_0$
+3. Your distribution is now $P(x=0) = 1/5$ and $ P(x= 1) = 4/5$. This is based on the conditional distribution for $x=0$.
 4. Randomly sample
-5. Your random sample leads to $A=1$
-6. Condition on $A_1$
-7. Your distribution is now $P(B=0) = 2/3$ and $ P(B= 1) = 1/3$
+5. Your random sample leads to $x=1$
+6. Condition on $x_1$
+7. Your distribution is now $P(y=0) = 2/3$ and $ P(y=1) = 1/3$. This is based on the conditional distribution of $x=1$.
 8. Randomly sample
-9. Your random sample leads to $B=1 $
-10. Condition on $B_1$
+9. Your random sample leads to $y=1 $
+10. Condition on $y_1$
 Now the process repeats thousands of times until and each move is recorded. 
 This algorithm then approximates well the true probability distribution after thousand of trials. More trials will lead to a better approximation.
 
@@ -253,13 +243,9 @@ $$
 You should have answered "no" to Question 1, meaning that we can't use our usual techniques here to find Bayes estimators for $\mu$ or $\gamma$ since we don't have a recognizable posterior distribution. Instead, we'll use a computational technique known as *Gibbs Sampling* to generate samples from this posterior distribution. Gibbs Sampling is particularly useful when we have more than one parameter, and the basic idea involves reducing our problem to a series of calculations involving one parameter at a time. In order to perform Gibbs Sampling, we need to find the conditional distributions $$g(\mu \mid y, \gamma) \propto f(y \mid \mu, \gamma)f(\mu)$$ $$g(\gamma \mid y, \mu) \propto f(y \mid \mu,\gamma)f(\gamma)$$ We will use these conditional distributions to sample from the joint posterior $g(\mu, \gamma \mid y)$ according to the following algorithm:
 
 > (1) Start with initial values $\mu^{(0)}, \gamma^{(0)}$.
-
 > (2) Sample $\mu^{(t+1)} \sim g(\mu \mid y, \gamma = \gamma^{(t)})$.
-
 > (3) Sample $\gamma^{(t+1)} \sim g(\gamma \mid y, \mu = \mu^{(t+1)})$.
-
 > (4) Repeat many times.
-
 It turns out that the resulting $\mu^{(0)}, \mu^{(1)}, \dots, \mu^{(N)}$ and $\gamma^{(0)}, \gamma^{(1)}, \dots, \gamma^{(N)}$ are samples from the joint posterior distribution $g(\mu, \gamma \mid Y)$, and we can use these sampled values to estimate quantities such as the posterior mean of each parameter $\hat{E}(\mu \mid y) = \frac{1}{N}\sum_{i=1}^N \mu^{(i)}, \ \ \hat{E}(\gamma \mid y) = \frac{1}{N}\sum_{i=1}^N \gamma^{(i)}$. Note that in practice we typically remove the initial iterations, known as the "burn-in" period: e.g., $\hat{E}(\mu \mid y) = \frac{1}{N-B}\sum_{i=B}^N \mu^{(i)}$.
 
 2. Show that the conditional distributions $g(\mu \mid y, \gamma), g(\gamma \mid y, \mu)$ are proportional to $f(y \mid \mu, \gamma)f(\mu), f(y \mid \mu,\gamma)f(\gamma)$, respectively, as stated above.
@@ -323,21 +309,17 @@ m <- 0
 v <- 1
 a <- 1
 b <- 1
-
 # set up data
 y <- 2
-
 # choose starting values by randomly sampling from our priors
 # (this is just one possible way to choose starting values)
 # (it's also useful to try out a few different starting values)
 set.seed(1)
 mu <- rnorm(1, mean = m, sd = sqrt(v))
 gam <- rgamma(1, shape = a, rate = b)
-
 # set up empty vectors to store samples
 mus <- c()
 gams <- c()
-
 # store starting values in vectors of samples
 mus[1] <- mu
 gams[1] <- gam
@@ -345,9 +327,8 @@ gams[1] <- gam
 
 ```{r run-gibbs, echo = T}
 # choose number of iterations
-# (we'll start with 100, but in practice you'd choose something much bigger)
-N <- 100
-
+# (we'll start with 1000, but in practice you'd choose something much bigger)
+N <- 1000
 # run through Gibbs Sampling for a total of N iterations
 for(i in 2:N){
   # update mu
@@ -384,7 +365,6 @@ hist(1/gams, xlab = expression(paste(sigma^2,'=',1/gamma)), main = '')
 ```{r posterior-summaries, echo = T}
 # posterior mean
 mean(mus)
-
 # posterior median
 median(mus)
 ```
@@ -396,14 +376,13 @@ median(mus)
 
 ```{r trace-plots, echo = T, fig.height = 3}
 iterations <- 1:N
-
 par(mfrow=c(1,3))
 plot(mus ~ iterations, xlab = 'Iteration', ylab = expression(mu), type = 'l')
 plot(gams ~ iterations, xlab = 'Iteration', ylab = expression(gamma), type = 'l')
 plot(1/gams ~ iterations, xlab = 'Iteration', ylab = expression(sigma^2), type = 'l')
 ```
 
-
+Successful trace plots cover the range of values in our distributions. It is important that trace plots are not stuck on one value, otherwise the distribution will not be accurate. Trace plots can best be described as a tour of a neighborhood. One does not want to be stuck in one location. To get the correct distribution, the markov chain should spend the most time in the locations that are most common. 
 
 As mentioned above, in practice we usually pick a burn-in period of initial iterations to remove. This decision is often motivated by the fact that, depending on your choice of starting value, it may take awhile for your chain of samples to look like it is "mixing" well. Play around with your choice of starting value above to see if you can find situations in which a burn-in period might be helpful. 
 
@@ -490,6 +469,3 @@ Gibbs sampling is a distribution approximation method suitable for problems were
 ### References 
 
 
-$$ P(X_{n+1} = x_{n+1} | X_n = x_n) $$
-
-$$Beta(\alpha + y, \beta + n - y) \\ Beta(10+20, 10+30-20)$$
