@@ -49,7 +49,7 @@ This prior favors Brynn. The mean probability is .36, with the mode at .33. This
 Prior: A prior is a probability distribution that shows our beliefs before any data is taken into account. A common distribution used for a prior is a beta model. Priors incorporate both the mean and the variance of your previous beliefs about the data. Priors with a greater spread indicate a less confident belief.
 
 
-```{r,out.width='50%'}
+```{r,out.width='50%',fig.align='center'}
 plot_beta(alpha = 1, beta = 1)
 plot_beta(alpha = 10, beta = 10)
 plot_beta(alpha = 7, beta = 4)
@@ -60,7 +60,7 @@ plot_beta(alpha = 4, beta = 7)
 
 Likelihood is the distribution of the data. In this example the outcome variable is binary on whether the person was voted for or not. So we have a binomial distribution of the likelihood. The graph below plots the density distribution of the binomial outcome. Aaron recieved 20 out of 30 votes in the exit survey we conducted. 
 
-```{r,out.width='50%'}
+```{r,out.width='50%',fig.align='center'}
 plot_binomial_likelihood(20,30)
 ```
 
@@ -83,7 +83,7 @@ Our data reinforces our prior that Aaron has around a .67 probability of winning
 This represents our largest shift. Our prior favored Brynn, but with the significantyl different data
 
 
-```{r,out.width='50%'}
+```{r,out.width='50%',fig.align='center'}
 plot_beta_binomial(alpha = 1, beta = 1, y = 20, n= 30)
 plot_beta_binomial(alpha = 10, beta = 10, y = 20, n= 30)
 plot_beta_binomial(alpha = 7, beta = 4, y = 20, n= 30)
