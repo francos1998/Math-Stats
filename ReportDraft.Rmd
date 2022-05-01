@@ -181,27 +181,27 @@ There are special cases of the Metropolis-Hastings that involve a different samp
 
 Example from [Youtube](https://www.youtube.com/watch?v=ER3DDBFzH2g)
 
-We start with an example of two random variables $A, B$ with a Bernoulli distribution. 
+We start with an example of two random variables $x, y$ with a Bernoulli distribution. 
 We now find their conditional distributions
 
-$$P(A|B = 0) \in P(A=1) = \frac{4}{5} \space , P(A = 0) = \frac{1}{5} $$
+$$P(x|y = 0) \in P(x=1) = \frac{4}{5} \space , P(x = 0) = \frac{1}{5} $$
 
-$$P(A|B = 1) \in P(A=1) = \frac{2}{5} \space , P(A = 0) = \frac{3}{5} $$
+$$P(x|y = 1) \in P(x=1) = \frac{2}{5} \space , P(x = 0) = \frac{3}{5} $$
 $$P(B|A = 0) \in P(B=1) = \frac{3}{4} \space , P(B = 0) = \frac{1}{4} $$
 
-$$P(B|A = 1) \in P(B=1) = \frac{1}{3} \space , P(B = 0) = \frac{2}{3} $$
+$$P(y|x = 1) \in P(y=1) = \frac{1}{3} \space , P(y = 0) = \frac{2}{3} $$
 
 1. Pick specific starting value of $(x_0,y_0)$ 
-Here we pick $(A_0),(B_0)$
-2. Condition on $B_0$
-3. Your distribution is now $P(A=0) = 1/5$ and $ P(A= 1) = 4/5$
+Here we pick $(x=0),(y=0)$
+2. Condition on $y_0$
+3. Your distribution is now $P(x=0) = 1/5$ and $ P(x= 1) = 4/5$. This is based on the conditional distribution for $x=0$.
 4. Randomly sample
-5. Your random sample leads to $A=1$
-6. Condition on $A_1$
-7. Your distribution is now $P(B=0) = 2/3$ and $ P(B= 1) = 1/3$
+5. Your random sample leads to $x=1$
+6. Condition on $x_1$
+7. Your distribution is now $P(y=0) = 2/3$ and $ P(y=1) = 1/3$. This is based on the conditional distribution of $x=1$.
 8. Randomly sample
-9. Your random sample leads to $B=1 $
-10. Condition on $B_1$
+9. Your random sample leads to $y=1 $
+10. Condition on $y_1$
 Now the process repeats thousands of times until and each move is recorded. 
 This algorithm then approximates well the true probability distribution after thousand of trials. More trials will lead to a better approximation.
 
@@ -333,7 +333,7 @@ gams[1] <- gam
 
 ```{r run-gibbs, echo = T}
 # choose number of iterations
-# (we'll start with 100, but in practice you'd choose something much bigger)
+# (we'll start with 1000, but in practice you'd choose something much bigger)
 N <- 1000
 
 # run through Gibbs Sampling for a total of N iterations
