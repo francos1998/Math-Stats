@@ -91,7 +91,7 @@ As these graphs illustrate, a change in our prior beliefs will affect the poster
 Monte Carlo simulations randomly sample points within a region to approximate a distribution. The example above is a simple illusion of a uniform distribution for an estimate for $\pi$. This samples the proportion of points within the square region that fall within the circle's bounds. The proportion would be equal to $\frac{\pi}{4}$ since we are only interested in one fourth of the circle. As we sample more, our estimation for $\pi$ gets closer to the actual distribution. This is due to the Central Limit Theorem. Monte Carlo simulations work well when the posterior distribution is easy to sample from. However, it is not always possible to sample from the posterior distribution, nor is it always efficient. 
 
 ![an image caption Source: From Towards Data Science an Overview of Monte Carlo](MC.png)
-This image illustrates a Monte Carlo simulation of 1/4 of circle to sample for $\pi$ . It is important to note some of the key qualities in this simulation. As n increases, the more accurate our simulation becomes. It is also imortant that the area that we are samplinc from is known and easy to sample from. One reason we use MCMC sampling is because our distribution is hard to sample from. 
+This image illustrates a Monte Carlo simulation of 1/4 of circle to sample for $\pi$ . It is important to note some of the key qualities in this simulation. As n increases, the more accurate our simulation becomes. It is also important that the area that we are sampling from is known and easy to sample from. One reason we use MCMC sampling is because our distribution is hard to sample from. 
 
 
 ## Markov Chains
