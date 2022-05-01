@@ -33,32 +33,32 @@ This first example shows how our priors affect posteriors in an election. Below 
 We parameterize our priors in a beta distribution $Beta(\alpha,\beta)$ between [0,1]. Beta distributions are used to represent probabilities. 
 Prior: A prior is a probability distribution that shows our beliefs before any data is taken into account. A common distribution used for a prior is a beta model. Priors incorporate both the mean and the variance of your previous beliefs about the data. Priors with a greater spread indicate a less confident belief.
 
-### Prior: 
+### Prior
 A prior is a probability distribution that shows our beliefs before any data is taken into account. A common distribution used for a prior is a beta model. Priors incorporate both the mean and the variance of your previous beliefs about the data. Priors with a greater spread indicate a less confident belief.
 
-#### First Prior
-$Beta(1,1)$ This is the same as the uniform distribution between [0,1]. We have no prior beliefs about how the election will take place. This is not realistic as it is always unlikely that someone will receive all of the votes or none of the votes.
+#### First Prior:
+$Beta(1,1)$.This is the same as the uniform distribution between [0,1]. We have no prior beliefs about how the election will take place. This is not realistic as it is always unlikely that someone will receive all of the votes or none of the votes.
 
 ```{r,out.width='40%',fig.align='center', echo=FALSE}
 plot_beta(alpha = 1, beta = 1)
 ```
 
-#### Second Prior
-$Beta(10,10)$
+#### Second Prior:
+$Beta(10,10)$. 
 In this case we believe that the election is close. The mean is centered at .5 probability. 
 ```{r,out.width='40%',fig.align='center', echo=FALSE}
 plot_beta(alpha = 10, beta = 10)
 ```
-#### Third Prior
-$Beta(7,4)$
+#### Third Prior:
+$Beta(7,4)$. 
 This prior favors Aaron. The mean probability is .64, with the mode at .67. This means that we have prior beliefs that Aaron will win the election.
 ```{r,out.width='40%',fig.align='center', echo=FALSE}
 plot_beta(alpha = 7, beta = 4)
 
 ```
 
-#### Fourth Prior
-$Beta(4,7)$
+#### Fourth Prior:
+$Beta(4,7)$.
 This prior favors Brynn. The mean probability is .36, with the mode at .33. This means that we have prior beliefs that Brynn will win the election.
 
 ```{r,out.width='40%',fig.align='center', echo=FALSE}
@@ -78,25 +78,25 @@ The posterior is simply a combination of the prior and data. In this case we con
 
 Next we will incorporate the same data into their respective distribution and graph them. We will now use the exit survey to update our beliefs on the final result of the election.
 
-### First Posterior
+#### First Posterior:
 Since our prior is equivalent to a uniform distribution, our posterior is nearly identical to our data.
 
 ```{r,out.width='40%',fig.align='center', echo=FALSE}
 plot_beta_binomial(alpha = 1, beta = 1, y = 20, n= 30)
 ```
 
-### Second Posterior
+#### Second Posterior:
 Our data is favorable to Aaron in comparison to our priors, so the posterior falls between our data and our centered prior.
 ```{r,out.width='40%',fig.align='center', echo=FALSE}
 plot_beta_binomial(alpha = 10, beta = 10, y = 20, n= 30)
 ```
-### Third Posterior
+#### Third Posterior:
 Our data reinforces our prior that Aaron has around a .67 probability of winning.
 ```{r,out.width='40%',fig.align='center', echo=FALSE}
 plot_beta_binomial(alpha = 7, beta = 4, y = 20, n= 30)
 ```
 
-### Fourth Posterior
+#### Fourth Posterior:
 This represents our largest shift. Our prior favored Brynn, but with the significantly different data the posterior shifted towards Aaron.
 
 ```{r,out.width='40%',fig.align='center', echo=FALSE}
@@ -167,9 +167,9 @@ bb_sim <- stan(model_code = bb_model, data = list(Y = 9),
                chains = 4, iter = 5000*2, seed = 84735)
 ```
 
-As you can see in Figure 1, when observing the distribution of the sampled $\pi$ values we approximate the target Beta(11,3) posterior model of $\pi$. The target pdf is next to it [@Alicia]. 
+As you can see in the figure below, when observing the distribution of the sampled $\pi$ values we approximate the target Beta(11,3) posterior model of $\pi$. The target pdf is superimposed to it [@Alicia]. 
 
-```{r, fig.width=2, fig.height= 2, fig.align='center', echo=FALSE, message=FALSE}
+```{r, fig.width=2, fig.height= 2, echo=FALSE, message=FALSE}
 # Histogram of the Markov chain values
 mcmc_hist(bb_sim, pars = "pi") + 
   yaxis_text(TRUE) + 
