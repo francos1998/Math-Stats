@@ -39,20 +39,20 @@ A prior is a probability distribution that shows our beliefs before any data is 
 #### First Prior
 $Beta(1,1)$ This is the same as the uniform distribution between [0,1]. We have no prior beliefs about how the election will take place. This is not realistic as it is always unlikely that someone will receive all of the votes or none of the votes.
 
-```{r,out.width='50%',fig.align='center', echo=FALSE}
+```{r,out.width='40%',fig.align='center', echo=FALSE}
 plot_beta(alpha = 1, beta = 1)
 ```
 
 #### Second Prior
 $Beta(10,10)$
 In this case we believe that the election is close. The mean is centered at .5 probability. 
-```{r,out.width='50%',fig.align='center', echo=FALSE}
+```{r,out.width='40%',fig.align='center', echo=FALSE}
 plot_beta(alpha = 10, beta = 10)
 ```
 #### Third Prior
 $Beta(7,4)$
 This prior favors Aaron. The mean probability is .64, with the mode at .67. This means that we have prior beliefs that Aaron will win the election.
-```{r,out.width='50%',fig.align='center', echo=FALSE}
+```{r,out.width='40%',fig.align='center', echo=FALSE}
 plot_beta(alpha = 7, beta = 4)
 
 ```
@@ -61,16 +61,14 @@ plot_beta(alpha = 7, beta = 4)
 $Beta(4,7)$
 This prior favors Brynn. The mean probability is .36, with the mode at .33. This means that we have prior beliefs that Brynn will win the election.
 
-```{r,out.width='50%',fig.align='center', echo=FALSE}
+```{r,out.width='40%',fig.align='center', echo=FALSE}
 plot_beta(alpha = 4, beta = 7)
 ```
-
-
 
 ### Likelihood: 
 The likelihood function is the distribution of the data. In this example the outcome variable is binary on whether the person was voted for or not. So we have a binomial distribution of the likelihood. The graph below plots the density distribution of the binomial outcome. Aaron received 20 out of 30 votes in the exit survey we conducted $Y\mid \pi \sim Bin(30,\pi)$ where $\pi = 0.67$ given that he receive 20 out of 30 votes. 
 
-```{r,out.width='50%',fig.align='center', echo=FALSE}
+```{r,out.width='40%',fig.align='center', echo=FALSE}
 plot_binomial_likelihood(20,30)
 ```
 
@@ -83,30 +81,29 @@ Next we will incorporate the same data into their respective distribution and gr
 ### First Posterior
 Since our prior is equivalent to a uniform distribution, our posterior is nearly identical to our data.
 
-```{r,out.width='50%',fig.align='center', echo=FALSE}
+```{r,out.width='40%',fig.align='center', echo=FALSE}
 plot_beta_binomial(alpha = 1, beta = 1, y = 20, n= 30)
 ```
 
 ### Second Posterior
 Our data is favorable to Aaron in comparison to our priors, so the posterior falls between our data and our centered prior.
-```{r,out.width='50%',fig.align='center', echo=FALSE}
+```{r,out.width='40%',fig.align='center', echo=FALSE}
 plot_beta_binomial(alpha = 10, beta = 10, y = 20, n= 30)
 ```
 ### Third Posterior
 Our data reinforces our prior that Aaron has around a .67 probability of winning.
-```{r,out.width='50%',fig.align='center', echo=FALSE}
+```{r,out.width='40%',fig.align='center', echo=FALSE}
 plot_beta_binomial(alpha = 7, beta = 4, y = 20, n= 30)
 ```
 
 ### Fourth Posterior
 This represents our largest shift. Our prior favored Brynn, but with the significantly different data the posterior shifted towards Aaron.
 
-```{r,out.width='50%',fig.align='center', echo=FALSE}
+```{r,out.width='40%',fig.align='center', echo=FALSE}
 plot_beta_binomial(alpha = 4, beta = 7, y = 20, n= 30)
 ```
 
 As these graphs illustrate, a change in our prior beliefs will affect the posterior, even with the same data.
-
 
 ## Monte Carlo
 Monte Carlo simulations randomly sample points within a region to approximate a distribution. The example below is a simple illustration of a uniform distribution for an estimate for $\pi$. This samples the proportion of points within the square region that fall within the circle's bounds. The proportion would be equal to $\frac{\pi}{4}$ since we are only interested in one fourth of the circle. As we sample more, our estimation for $\pi$ gets closer to the actual distribution. This is due to the Central Limit Theorem. Monte Carlo simulations work well when the posterior distribution is easy to sample from. However, it is not always possible to sample from the posterior distribution, nor is it always efficient. 
@@ -172,7 +169,7 @@ bb_sim <- stan(model_code = bb_model, data = list(Y = 9),
 
 As you can see in Figure 1, when observing the distribution of the sampled $\pi$ values we approximate the target Beta(11,3) posterior model of $\pi$. The target pdf is next to it [@Alicia]. 
 
-```{r, fig.width=3, fig.height= 3, fig.align='center'}
+```{r, fig.width=2, fig.height= 2, fig.align='center'}
 # Histogram of the Markov chain values
 mcmc_hist(bb_sim, pars = "pi") + 
   yaxis_text(TRUE) + 
@@ -181,8 +178,8 @@ mcmc_hist(bb_sim, pars = "pi") +
 p = seq(0, 1, length=100)
 mcmc_dens(bb_sim, pars = "pi") + 
   yaxis_text(TRUE) + 
-  ylab("density")
-plot(p, y = dbeta(p, 11, 3), type='l')
+  ylab("density")+
+  stat_function(fun = dbeta, args = list(11, 3)) 
 ```
 
 # Metropolis-Hastings algorithm
@@ -380,8 +377,6 @@ Trace plots show the values from which the algorithm sampled from by iteration. 
 
 Next, once we have evaluated whether our approximate distribution is proportional to our posterior we can estimate different measurements to understand better our target posterior. In this case we calculate the mean and median of $\mu$.
 
-**ANSWER:**
-
 ```{r posterior-summaries, echo = T}
 # posterior mean
 mean(mus)
@@ -392,12 +387,11 @@ median(mus)
 
 As mentioned above, in practice we usually pick a burn-in period of initial iterations to remove. This decision is often motivated by the fact that, depending on your choice of starting value, it may take awhile for your chain of samples to look like it is "mixing" well. Play around with your choice of starting value above to see if you can find situations in which a burn-in period might be helpful. 
 
-##Discussion
+# Discussion
 
 ### Gibbs Sampling vs Hamiltonian Sampling
 
 One of the most difficult aspects in Gibbs sampling is finding the conditional distributions for our parameters. As shown in the Normal-Normal example previously explained, it was difficult to work with 2 unknown parameters, it's clear that working with more than two unknown parameters would be even more troublesome. Additionally, sampling from more than 2 different conditional distributions and alternating between them makes the computation for this algorithm highly expensive. Because of efficiency, people have started opting for Hamiltonian sampling instead. This is reflected on the discussion on whether to use the RSTAN or RJAGS packages, where RSTAN employs a Hamiltonian algorithm and RJAGS uses a Gibbs algorithm. When comparing both algorithms model specification matters. Furthermore, RJAGS performs better when we use conjugate priors while RSTAN performs better when we have a non-centered specification and partly and non-conjugate models. RSTAN tends to be better at exploring complicated posterior distributions while RJAGS can be very fast for problems with specific characteristics. Overall, RSTAN provides the best performance [@Bolstad].
-
 
 ### Real World Application
 
@@ -468,7 +462,7 @@ Step 2. Sample $Z^{(m)}$ from $Pr(Z \mid X,P^{(m)})$
 
 In step 1 we are estimating allele frequencies for each population given our sampled genotype and assuming that the population of origin of each individual is known. In step 2 we estimate the population of origin of each individual, given our sampled genotype and assuming that the population's allele frequencies are known. For sufficiently large m and c, $(Z^{(m)}, P^{(m)}), (Z^{(m+c)}, P^{(m+c)}),(Z^{(m+2c)}, P^{(m+2c)}),...$ will be approximately independent random samples from our posterior $Pr(Z,P \mid X)$.  
 
-## Conclusion 
+# Conclusion 
 
 Gibbs sampling is a distribution approximation method suitable for problems where we are trying to estimate more than one parameter. It's a variation of the Metropolis-Hastings algorithm. We sample alternatively from conditional distributions until we approximate our posterior. Like other MCMC methods, it's based on the idea of creating chains of values, where for each chain we sample from models dependent on the value of the previous chain. Computationally, it's more efficient when we work with conjugate priors; however, overall there has been a greater preference for Hamiltonian software algorithms that are suitable for more complex models. Gibbs sampling is the best choice in specific conditions, like in the genetics example described earlier, it is suitable when we have a conjugate Dirichlet prior, and when working with one parameter at a time.  
 
