@@ -162,14 +162,14 @@ bb_model <- "
 
 We simulate the posterior using the stan() function. This function designs and runs an MCMC algorithm to produce an approximate sample from the Beta-Binomial posterior. The model code argument requires a string that defines the model. The data argument requires a list of observed data. The chains argument specifies how many parallel Markov Chains we are running. Since we are running four chains we will have four $\pi$ values. The "iter' argument specifies the number of iterations or length for each chain. The first half of this iterations are thrown out as "burn in" samples (samples that we use to calibrate our model). To keep our random results constant we utilize the seed argument within the stan() function. 
 
-```{r, echo=FALSE, results='hide'}
+```{r, echo=FALSE, results='hide', message=FALSE}
 bb_sim <- stan(model_code = bb_model, data = list(Y = 9), 
                chains = 4, iter = 5000*2, seed = 84735)
 ```
 
 As you can see in Figure 1, when observing the distribution of the sampled $\pi$ values we approximate the target Beta(11,3) posterior model of $\pi$. The target pdf is next to it [@Alicia]. 
 
-```{r, fig.width=2, fig.height= 2, fig.align='center'}
+```{r, fig.width=2, fig.height= 2, fig.align='center', echo=FALSE, message=FALSE}
 # Histogram of the Markov chain values
 mcmc_hist(bb_sim, pars = "pi") + 
   yaxis_text(TRUE) + 
@@ -375,15 +375,7 @@ plot(1/gams ~ iterations, xlab = 'Iteration', ylab = expression(sigma^2), type =
 
 Trace plots show the values from which the algorithm sampled from by iteration. It's like a tour around the different values of our parameters where we spend most time visiting values that are more plausible in our posterior. Successful trace plots cover the range of values in our distributions. It is important that trace plots are not stuck on one value, otherwise the distribution will not be accurate. Trace plots can best be described as a tour of a neighborhood. One does not want to be stuck in one location. To get the correct distribution, the markov chain should spend the most time in the locations that are most plausible. 
 
-Next, once we have evaluated whether our approximate distribution is proportional to our posterior we can estimate different measurements to understand better our target posterior. In this case we calculate the mean and median of $\mu$.
-
-```{r posterior-summaries, echo = T}
-# posterior mean
-mean(mus)
-# posterior median
-median(mus)
-```
-
+Next, once we have evaluated whether our approximate distribution is proportional to our posterior we can estimate different measurements to understand better our target posterior. 
 
 As mentioned above, in practice we usually pick a burn-in period of initial iterations to remove. This decision is often motivated by the fact that, depending on your choice of starting value, it may take awhile for your chain of samples to look like it is "mixing" well. Play around with your choice of starting value above to see if you can find situations in which a burn-in period might be helpful. 
 
