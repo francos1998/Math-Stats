@@ -34,19 +34,22 @@ We parameterize our priors in a beta distribution $Beta(\alpha,\beta)$ between [
 Prior: A prior is a probability distribution that shows our beliefs before any data is taken into account. A common distribution used for a prior is a beta model. Priors incorporate both the mean and the variance of your previous beliefs about the data. Priors with a greater spread indicate a less confident belief.
 
 ### First Prior
-$Beta(1,1)$ This is the same as the uniform distribution between [0,1]. We have no prior beliefs about how the election will take place. This is not realisitic as there is always unlikely that someone will recieve all of the votes or none of the votes
+$Beta(1,1)$ This is the same as the uniform distribution between [0,1]. We have no prior beliefs about how the election will take place. This is not realisitic as there is always unlikely that someone will receive all of the votes or none of the votes
+
 ### Second Prior
 $Beta(10,10)$
 We believe that the election is close. The mean is centered at .5 probability
+
 ### Third Prior
 This prior favors Aaron. The mean probability is .64, with the mode at .67. This means that we have prior beliefs that Aaron will win the election.
+
 ### Fourth Prior
 This prior favors Brynn. The mean probability is .36, with the mode at .33. This means that we have prior beliefs that Brynn will win the election.
 
 Prior: A prior is a probability distribution that shows our beliefs before any data is taken into account. A common distribution used for a prior is a beta model. Priors incorporate both the mean and the variance of your previous beliefs about the data. Priors with a greater spread indicate a less confident belief.
 
 
-```{r}
+```{r,out.width='50%'}
 plot_beta(alpha = 1, beta = 1)
 plot_beta(alpha = 10, beta = 10)
 plot_beta(alpha = 7, beta = 4)
@@ -57,7 +60,7 @@ plot_beta(alpha = 4, beta = 7)
 
 Likelihood is the distribution of the data. In this example the outcome variable is binary on whether the person was voted for or not. So we have a binomial distribution of the likelihood. The graph below plots the density distribution of the binomial outcome. Aaron recieved 20 out of 30 votes in the exit survey we conducted. 
 
-```{r}
+```{r,out.width='50%'}
 plot_binomial_likelihood(20,30)
 ```
 
@@ -69,15 +72,18 @@ Each graph incorporates the same data into their respective distribution. We wil
 
 ### First Posterior
 Since our prior is equivalent to a normal distribution, our posterior is nearly identical to our data.
+
 ### Second Posterior
 Our data is favorable to Aaron in comparison to our priors, so the posterior falls between our data and our centered prior.
+
 ### Third Posterior
 Our data reinforces our prior that Aaron has around a .67 probability of winning.
+
 ### Fourth Posterior
 This represents our largest shift. Our prior favored Brynn, but with the significantyl different data
 
 
-```{r}
+```{r,out.width='50%'}
 plot_beta_binomial(alpha = 1, beta = 1, y = 20, n= 30)
 plot_beta_binomial(alpha = 10, beta = 10, y = 20, n= 30)
 plot_beta_binomial(alpha = 7, beta = 4, y = 20, n= 30)
@@ -104,7 +110,7 @@ Gibbs Sampling is a specific type of MCMC sampling that is used when it is hard 
 
 ### Markov Chains Monte Carlo (MCMC)
 
-MCMC is the application of Markov Chains to simulate probability models. Two important characteristics are that MCMC samples aren't taken from the posterior pdf and that the samples aren't independent. The fact that the samples aren't independent reflects the "chain" fiture of the algorithm. For example in the $N-length$ MCMC sample ( Markov chain) $\{\theta^{(1)},\theta^{(2)},...,\theta^{(N)}\}$, when constructing the chain $\theta^{(2)}$ is drawn from some model that depends upon $\theta^{(1)}$, $\theta^{(3)}$ is drawn from some model that depends on $\theta^{(2)}$ and so on. 
+MCMC is the application of Markov Chains to simulate probability models. Two important characteristics are that MCMC samples aren't taken from the posterior pdf and that the samples aren't independent. The fact that the samples aren't independent reflects the "chain" feature of the algorithm. For example in the $N-length$ MCMC sample ( Markov chain) $\{\theta^{(1)},\theta^{(2)},...,\theta^{(N)}\}$, when constructing the chain $\theta^{(2)}$ is drawn from some model that depends upon $\theta^{(1)}$, $\theta^{(3)}$ is drawn from some model that depends on $\theta^{(2)}$ and so on. 
 
 We can say that the (i+1)st chain value $\theta^{(i+1)}$ has a conditional pdf $f(\theta^{(i+1)}|\theta^{(i)},y)$ is drawn from a model that depends on data y and the previous chain value $\theta^{(i)}$. It's important to note that by the Markov property, $\theta^{(i+1)}$ depends on the preceding chain values only through $\theta^{(i)}$, the most recent value. The only information we need to simulate $\theta^{(i+1)}$ is the value of $\theta^{(i)}$. Therefore, each value can be sampled from a different model, and none of these models are the target posterior. The pdf from which a Markov Chain value is simulated is not equivalent to the posterior pdf. 
 
