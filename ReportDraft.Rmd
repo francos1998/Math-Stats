@@ -13,7 +13,7 @@ library(bayesplot)
 
 # Introduction
 
-Using Bayesian statistics we can incorporate prior knowledge into the estimation of our unknown parameters. We incorporate our prior knowledge of the unknown parameter through a prior distribution. Then, we will update our beliefs about $\theta$ with observed data and we will end up with what we call a posterior distribution. We will use the posterior to estimate the parameters of interest. Gibbs sampling is a type of Markov Chain Monte Carlo sampling that approximates posterior distributions when we can't sample from the posterior distributions directly. This method is an alternative to Metropolis-Hastings. In a nutshell, Gibbs sampling is  a method that samples from separate conditional distributions and is most useful when the joint posterior distribution is unknown or hard to sample from. Each event is dependent on the last event; and it is only dependent on the last event (like in a standard Markov Chain).
+Using Bayesian statistics we can incorporate prior knowledge into the estimation of our unknown parameters. In practice we incorporate our prior knowledge of the unknown parameter through a prior distribution. Then, we update our beliefs about $\theta$ with observed data and we will end up with what we call a posterior distribution. We can use the posterior to estimate the parameters of interest. There are different methods for when we can't sample from the posterior. This is when we use Markov Chain Monte Carlo (MCMC) techniques that approximate our target posterior. Gibbs sampling is a type of MCMC that uses conditional distributions to approximate a joint posterior distribution. This method is an alternative to Metropolis-Hastings. In a nutshell, Gibbs sampling is  a method that samples from separate conditional distributions and is most useful when the joint posterior distribution is unknown or hard to sample from. Each event is dependent on the last event; and it is only dependent on the last event (like in a standard Markov Chain).
 
 
 # Motivation
@@ -24,80 +24,95 @@ Gibbs sampling is a useful algorithm for Bayesian estimation. We think that inco
 
 ## Bayesian Statistics
 
-Bayesian Statistics is a dfferent philosophy of statistics. Most statistical modeling that people use are under the frequentest school of thought. Frequentest methods depend only on the observed data. This means that interpretations and inference can only be from the sample that was studied or collected. Bayesian methods incorporate prior beliefs into the model before the data is received.
+Bayesian Statistics is a different philosophy of statistics. Most statistical modeling that people use are under the Frequentist school of thought. Frequentist methods depend only on the observed data. This means that interpretations and inference can only be from the sample that was studied or collected. Bayesian methods incorporate prior beliefs into the model before the data is received.
 
 ### Example 1
 
 We have prior information regarding an upcoming election.
-The first example shows how our priors affect posteriors in an election. Below we show for different priors for candidates. Aaron will be represented by alpha and Brynn will be represented by beta. 
-We parameterize our priors in a beta distribution $Beta(\alpha,\beta)$ between [0,1]. Beta distributions represent the probability. 
+This first example shows how our priors affect posteriors in an election. Below we show for different priors for candidates. Aaron will be represented by alpha and Brynn will be represented by beta. 
+We parameterize our priors in a beta distribution $Beta(\alpha,\beta)$ between [0,1]. Beta distributions are used to represent probabilities. 
 Prior: A prior is a probability distribution that shows our beliefs before any data is taken into account. A common distribution used for a prior is a beta model. Priors incorporate both the mean and the variance of your previous beliefs about the data. Priors with a greater spread indicate a less confident belief.
 
-### First Prior
-$Beta(1,1)$ This is the same as the uniform distribution between [0,1]. We have no prior beliefs about how the election will take place. This is not realisitic as there is always unlikely that someone will receive all of the votes or none of the votes
+### Prior: 
+A prior is a probability distribution that shows our beliefs before any data is taken into account. A common distribution used for a prior is a beta model. Priors incorporate both the mean and the variance of your previous beliefs about the data. Priors with a greater spread indicate a less confident belief.
 
-### Second Prior
+#### First Prior
+$Beta(1,1)$ This is the same as the uniform distribution between [0,1]. We have no prior beliefs about how the election will take place. This is not realistic as it is always unlikely that someone will receive all of the votes or none of the votes.
+
+```{r,out.width='50%',fig.align='center', echo=FALSE}
+plot_beta(alpha = 1, beta = 1)
+```
+
+#### Second Prior
 $Beta(10,10)$
-We believe that the election is close. The mean is centered at .5 probability
-
-### Third Prior
+In this case we believe that the election is close. The mean is centered at .5 probability. 
+```{r,out.width='50%',fig.align='center', echo=FALSE}
+plot_beta(alpha = 10, beta = 10)
+```
+#### Third Prior
+$Beta(7,4)$
 This prior favors Aaron. The mean probability is .64, with the mode at .67. This means that we have prior beliefs that Aaron will win the election.
+```{r,out.width='50%',fig.align='center', echo=FALSE}
+plot_beta(alpha = 7, beta = 4)
 
-### Fourth Prior
+```
+
+#### Fourth Prior
+$Beta(4,7)$
 This prior favors Brynn. The mean probability is .36, with the mode at .33. This means that we have prior beliefs that Brynn will win the election.
 
-Prior: A prior is a probability distribution that shows our beliefs before any data is taken into account. A common distribution used for a prior is a beta model. Priors incorporate both the mean and the variance of your previous beliefs about the data. Priors with a greater spread indicate a less confident belief.
-
-
-```{r,out.width='50%',fig.align='center'}
-plot_beta(alpha = 1, beta = 1)
-plot_beta(alpha = 10, beta = 10)
-plot_beta(alpha = 7, beta = 4)
+```{r,out.width='50%',fig.align='center', echo=FALSE}
 plot_beta(alpha = 4, beta = 7)
 ```
 
 
 
-Likelihood is the distribution of the data. In this example the outcome variable is binary on whether the person was voted for or not. So we have a binomial distribution of the likelihood. The graph below plots the density distribution of the binomial outcome. Aaron recieved 20 out of 30 votes in the exit survey we conducted. 
+### Likelihood: 
+The likelihood function is the distribution of the data. In this example the outcome variable is binary on whether the person was voted for or not. So we have a binomial distribution of the likelihood. The graph below plots the density distribution of the binomial outcome. Aaron received 20 out of 30 votes in the exit survey we conducted $Y\mid \pi \sim Bin(30,\pi)$ where $\pi = 0.67$ given that he receive 20 out of 30 votes. 
 
-```{r,out.width='50%',fig.align='center'}
+```{r,out.width='50%',fig.align='center', echo=FALSE}
 plot_binomial_likelihood(20,30)
 ```
 
 
-Posterior
+### Posterior: 
 The posterior is simply a combination of the prior and data. In this case we conveniently chose conjugate distribution in which the prior and posterior share the same distribution. We combine our data with our prior model to form the posterior distribution. As more data is incorporated more weight shifts to the data from the prior. 
 
-Each graph incorporates the same data into their respective distribution. We will now use the exit survey to update our beliefs on the final result of the election.
+Next we will incorporate the same data into their respective distribution and graph them. We will now use the exit survey to update our beliefs on the final result of the election.
 
 ### First Posterior
-Since our prior is equivalent to a normal distribution, our posterior is nearly identical to our data.
+Since our prior is equivalent to a uniform distribution, our posterior is nearly identical to our data.
+
+```{r,out.width='50%',fig.align='center', echo=FALSE}
+plot_beta_binomial(alpha = 1, beta = 1, y = 20, n= 30)
+```
 
 ### Second Posterior
 Our data is favorable to Aaron in comparison to our priors, so the posterior falls between our data and our centered prior.
-
+```{r,out.width='50%',fig.align='center', echo=FALSE}
+plot_beta_binomial(alpha = 10, beta = 10, y = 20, n= 30)
+```
 ### Third Posterior
 Our data reinforces our prior that Aaron has around a .67 probability of winning.
+```{r,out.width='50%',fig.align='center', echo=FALSE}
+plot_beta_binomial(alpha = 7, beta = 4, y = 20, n= 30)
+```
 
 ### Fourth Posterior
-This represents our largest shift. Our prior favored Brynn, but with the significantyl different data
+This represents our largest shift. Our prior favored Brynn, but with the significantly different data the posterior shifted towards Aaron.
 
-
-```{r,out.width='50%',fig.align='center'}
-plot_beta_binomial(alpha = 1, beta = 1, y = 20, n= 30)
-plot_beta_binomial(alpha = 10, beta = 10, y = 20, n= 30)
-plot_beta_binomial(alpha = 7, beta = 4, y = 20, n= 30)
+```{r,out.width='50%',fig.align='center', echo=FALSE}
 plot_beta_binomial(alpha = 4, beta = 7, y = 20, n= 30)
 ```
 
 As these graphs illustrate, a change in our prior beliefs will affect the posterior, even with the same data.
 
 
-## Monte Carlo https://towardsdatascience.com/an-overview-of-monte-carlo-methods-675384eb1694
-Monte Carlo simulations randomly sample points within a region to approximate a distribution. The example above is a simple illusion of a uniform distribution for an estimate for $\pi$. This samples the proportion of points within the square region that fall within the circle's bounds. The proportion would be equal to $\frac{\pi}{4}$ since we are only interested in one fourth of the circle. As we sample more, our estimation for $\pi$ gets closer to the actual distribution. This is due to the Central Limit Theorem. Monte Carlo simulations work well when the posterior distribution is easy to sample from. However, it is not always possible to sample from the posterior distribution, nor is it always efficient. 
+## Monte Carlo
+Monte Carlo simulations randomly sample points within a region to approximate a distribution. The example below is a simple illustration of a uniform distribution for an estimate for $\pi$. This samples the proportion of points within the square region that fall within the circle's bounds. The proportion would be equal to $\frac{\pi}{4}$ since we are only interested in one fourth of the circle. As we sample more, our estimation for $\pi$ gets closer to the actual distribution. This is due to the Central Limit Theorem. Monte Carlo simulations work well when the posterior distribution is easy to sample from. However, it is not always possible to sample from the posterior distribution, nor is it always efficient. 
 
 ![an image caption Source: From Towards Data Science an Overview of Monte Carlo](MC.png)
-This image illustrates a Monte Carlo simulation of 1/4 of circle to sample for $\pi$ . It is important to note some of the key qualities in this simulation. As n increases, the more accurate our simulation becomes. It is also important that the area that we are sampling from is known and easy to sample from. One reason we use MCMC sampling is because our distribution is hard to sample from. 
+This image illustrates a Monte Carlo simulation of 1/4 of circle to sample for $\pi$ [@Pease]. It is important to note some of the key qualities in this simulation. As n increases, the more accurate our simulation becomes. It is also important that the area that we are sampling from is known and easy to sample from. One reason we use MCMC sampling is because our distribution is hard to sample from. 
 
 
 ## Markov Chains
@@ -106,17 +121,17 @@ Markov Chains are an example of a random walk. Random walks are a series of rand
 
 
 ## Gibbs Sampling Overview
-Gibbs Sampling is a specific type of MCMC sampling that is used when it is hard to sample from the joint pdf or pmf or when the joint pdf (or pmf) is unknown. To perform Gibbs sampling you must know the conditional distributions of both variables. 
+Gibbs Sampling is a specific type of MCMC sampling that is used when it is hard to sample from the joint Probability Distribtutin Function (PDF) or Probability Mass Function (PMF) or when the joint PDF (or PMF) is unknown. To perform Gibbs sampling you must know the conditional distributions of both variables. 
 
 ### Markov Chains Monte Carlo (MCMC)
 
-MCMC is the application of Markov Chains to simulate probability models. Two important characteristics are that MCMC samples aren't taken from the posterior pdf and that the samples aren't independent. The fact that the samples aren't independent reflects the "chain" feature of the algorithm. For example in the $N-length$ MCMC sample ( Markov chain) $\{\theta^{(1)},\theta^{(2)},...,\theta^{(N)}\}$, when constructing the chain $\theta^{(2)}$ is drawn from some model that depends upon $\theta^{(1)}$, $\theta^{(3)}$ is drawn from some model that depends on $\theta^{(2)}$ and so on. 
+MCMC is the application of Markov Chains to simulate probability models. Two important characteristics are that MCMC samples aren't taken from the posterior pdf and that the samples aren't independent. The fact that the samples aren't independent reflects the "chain" feature of the algorithm. For example in the $N-length$ MCMC sample ( Markov chain) $\{\theta^{(1)},\theta^{(2)},...,\theta^{(N)}\}$, when constructing the chain, $\theta^{(2)}$ is drawn from some model that depends upon $\theta^{(1)}$, $\theta^{(3)}$ is drawn from some model that depends on $\theta^{(2)}$ and so on. 
 
-We can say that the (i+1)st chain value $\theta^{(i+1)}$ has a conditional pdf $f(\theta^{(i+1)}|\theta^{(i)},y)$ is drawn from a model that depends on data y and the previous chain value $\theta^{(i)}$. It's important to note that by the Markov property, $\theta^{(i+1)}$ depends on the preceding chain values only through $\theta^{(i)}$, the most recent value. The only information we need to simulate $\theta^{(i+1)}$ is the value of $\theta^{(i)}$. Therefore, each value can be sampled from a different model, and none of these models are the target posterior. The pdf from which a Markov Chain value is simulated is not equivalent to the posterior pdf. 
+We can say that the (i+1)st chain value $\theta^{(i+1)}$ has a conditional PDF $f(\theta^{(i+1)}|\theta^{(i)},y)$ is drawn from a model that depends on data y and the previous chain value $\theta^{(i)}$. It's important to note that by the Markov property, $\theta^{(i+1)}$ depends on the preceding chain values only through $\theta^{(i)}$, the most recent value. The only information we need to simulate $\theta^{(i+1)}$ is the value of $\theta^{(i)}$. Therefore, each value can be sampled from a different model, and none of these models are the target posterior. The pdf from which a Markov Chain value is simulated is not equivalent to the posterior pdf. 
 
 $$f(\theta^{(i+1)}|\theta^{(i)}, y)\ne f(\theta^{(i+1)}| y)$$
 
-We will conduct the MCMC simulation using the rstan package [@rstan]. There are two essential steps to all rstan analyses, first we define the Bayesian model structure and then simulate the posterior.We will use a generical Beta-Binomial example: 
+We will conduct the MCMC simulation using the rstan package [@rstan]. There are two essential steps to all RSTAN analyses, first we define the Bayesian model structure and then simulate the posterior. It's important to note that RSTAN doesn't use Gibbs sampling, it uses a Hamiltonian algorithm, we are using this package to show how MCMC computation works. We will use a generic Beta-Binomial example: 
 
 $$Y\mid \pi \sim Bin(10,\pi)$$
 $$\pi \sim Beta(2,2)$$
@@ -155,7 +170,7 @@ bb_sim <- stan(model_code = bb_model, data = list(Y = 9),
                chains = 4, iter = 5000*2, seed = 84735)
 ```
 
-As you can see in Figure 1, when observing the distribution of the sampled $\pi$ values we approximate the target Beta(11,3) posterior model of $\pi$. The target pdf is next to it. [@Alicia]
+As you can see in Figure 1, when observing the distribution of the sampled $\pi$ values we approximate the target Beta(11,3) posterior model of $\pi$. The target pdf is next to it [@Alicia]. 
 
 ```{r, fig.width=3, fig.height= 3, fig.align='center'}
 # Histogram of the Markov chain values
@@ -174,22 +189,21 @@ plot(p, y = dbeta(p, 11, 3), type='l')
 
 If we weren't able to recognize the posterior model of $\mu$ in a Normal-Normal model, we could approximate it using the MCMC simulation. Metropolis-Hastings algorithm helps automate the decision of what values of $\mu$ to sample and with what frequency. This algorithm iterates through a two step process. If we are in the location $\mu^{(i)} = \mu$ we select the next value to sample first by proposing a random location $\mu^{\prime}$ and then we decide whether to stay at the current location or to stay at the current location $\mu^{(i+1)} = \mu$. 
 
-There are special cases of the Metropolis-Hastings that involve a different sampling decision criteria such as the Gibbs sampling, the Monte Carlo and the Metropolis algorithms. In this report we will  be focusing on the Gibbs Sampling algorithm. 
+There are special cases of the Metropolis-Hastings that involve a different sampling decision criteria such as Gibbs sampling, Hamiltonian, the Monte Carlo and the Metropolis algorithms. In this report we will be focusing on the Gibbs Sampling algorithm. 
 
 
 # Gibbs Sampling
 
 ### Example 1: Bernoulli Distribution: 
 
-Example from [Youtube](https://www.youtube.com/watch?v=ER3DDBFzH2g)
 
-We start with an example of two random variables $x, y$ with a Bernoulli distribution. 
+We use Gibbs sampling to approximate a posterior for a joint distribution. As we will demonstrate later, we reduce our problem to calculations that only involve one parameter at the time. This is more efficient than trying to find the real posterior. We start with an example of two random variables $x, y$ with a Bernoulli distribution [@Lambert]. 
 We now find their conditional distributions. This process is a simplified version of what is done in all forms of Gibbs Sampling. By understanding the steps below, one will be able to understand the concepts behind more complex distributions.
 
 $$P(x|y = 0) \in P(x=1) = \frac{4}{5} \space , P(x = 0) = \frac{1}{5} $$
 
 $$P(x|y = 1) \in P(x=1) = \frac{2}{5} \space , P(x = 0) = \frac{3}{5} $$
-$$P(B|A = 0) \in P(B=1) = \frac{3}{4} \space , P(B = 0) = \frac{1}{4} $$
+$$P(y|x = 0) \in P(B=1) = \frac{3}{4} \space , P(y = 0) = \frac{1}{4} $$
 
 $$P(y|x = 1) \in P(y=1) = \frac{1}{3} \space , P(y = 0) = \frac{2}{3} $$
 
@@ -221,9 +235,8 @@ $$\mu \sim N(m, v)$$
 
 $$\gamma \sim \text{Gamma}(a,b)$$
 
-1. Write down the joint posterior distribution for $\mu, \gamma$. Does this look like a recognizable probability distribution?
+We can start writing down the joint posterior distribution for $\mu, \gamma$. 
 
-**ANSWER:** No, this is not a recognizable posterior:
 
 $$
 \begin{aligned}
@@ -240,7 +253,9 @@ g(\mu,\gamma \mid y) & \propto f(y \mid \mu, \gamma) f(\mu, \gamma) \\
 $$
 
 
-You should have answered "no" to Question 1, meaning that we can't use our usual techniques here to find Bayes estimators for $\mu$ or $\gamma$ since we don't have a recognizable posterior distribution. Instead, we'll use a computational technique known as *Gibbs Sampling* to generate samples from this posterior distribution. Gibbs Sampling is particularly useful when we have more than one parameter, and the basic idea involves reducing our problem to a series of calculations involving one parameter at a time. In order to perform Gibbs Sampling, we need to find the conditional distributions $$g(\mu \mid y, \gamma) \propto f(y \mid \mu, \gamma)f(\mu)$$ $$g(\gamma \mid y, \mu) \propto f(y \mid \mu,\gamma)f(\gamma)$$ We will use these conditional distributions to sample from the joint posterior $g(\mu, \gamma \mid y)$ according to the following algorithm:
+We can see this doesn't look like a recognizable probability distribution. Therefore, we can't use our usual techniques here to find Bayes estimators for $\mu$ or $\gamma$ since we don't have a recognizable posterior distribution. Instead, we'll use *Gibbs Sampling* to generate samples from this posterior distribution. In order to perform Gibbs Sampling, we need to find the conditional distributions $$g(\mu \mid y, \gamma) \propto f(y \mid \mu, \gamma)f(\mu)$$ $$g(\gamma \mid y, \mu) \propto f(y \mid \mu,\gamma)f(\gamma)$$. 
+
+We will use these conditional distributions to sample from the joint posterior $g(\mu, \gamma \mid y)$ according to the following algorithm:
 
 > (1) Start with initial values $\mu^{(0)}, \gamma^{(0)}$.
 > (2) Sample $\mu^{(t+1)} \sim g(\mu \mid y, \gamma = \gamma^{(t)})$.
@@ -248,9 +263,7 @@ You should have answered "no" to Question 1, meaning that we can't use our usual
 > (4) Repeat many times.
 It turns out that the resulting $\mu^{(0)}, \mu^{(1)}, \dots, \mu^{(N)}$ and $\gamma^{(0)}, \gamma^{(1)}, \dots, \gamma^{(N)}$ are samples from the joint posterior distribution $g(\mu, \gamma \mid Y)$, and we can use these sampled values to estimate quantities such as the posterior mean of each parameter $\hat{E}(\mu \mid y) = \frac{1}{N}\sum_{i=1}^N \mu^{(i)}, \ \ \hat{E}(\gamma \mid y) = \frac{1}{N}\sum_{i=1}^N \gamma^{(i)}$. Note that in practice we typically remove the initial iterations, known as the "burn-in" period: e.g., $\hat{E}(\mu \mid y) = \frac{1}{N-B}\sum_{i=B}^N \mu^{(i)}$.
 
-2. Show that the conditional distributions $g(\mu \mid y, \gamma), g(\gamma \mid y, \mu)$ are proportional to $f(y \mid \mu, \gamma)f(\mu), f(y \mid \mu,\gamma)f(\gamma)$, respectively, as stated above.
-
-**ANSWER:**
+To use this conditional distributions, first we need to show that the conditional distributions $g(\mu \mid y, \gamma), g(\gamma \mid y, \mu)$ are proportional to $f(y \mid \mu, \gamma)f(\mu), f(y \mid \mu,\gamma)f(\gamma)$, respectively, as stated above.
 
 $$
 \begin{aligned}
@@ -266,9 +279,7 @@ A similar argument can be used to show $g(\gamma \mid y, \mu) \propto f(y | \mu,
 
 
 
-3. Use this result to show that $\mu \mid y, \gamma \sim N\left(\frac{y\gamma + \frac{m}{v}}{\gamma + \frac{1}{v}}, \left[\gamma + \frac{1}{v} \right]^{-1}\right)$ and $\gamma \mid y, \mu \sim \text{Gamma}\left(\frac{1}{2} + a, \frac{1}{2}(y-\mu)^2 + b\right)$.
-
-**ANSWER:**
+Next we can use this result to show that $\mu \mid y, \gamma \sim N\left(\frac{y\gamma + \frac{m}{v}}{\gamma + \frac{1}{v}}, \left[\gamma + \frac{1}{v} \right]^{-1}\right)$ and $\gamma \mid y, \mu \sim \text{Gamma}\left(\frac{1}{2} + a, \frac{1}{2}(y-\mu)^2 + b\right)$.
 
 $$
 \begin{aligned}
@@ -299,9 +310,7 @@ g(\gamma \mid y, \mu) &\propto f(y \mid \mu, \gamma)f(\gamma) \\
 
 $$\implies \gamma \mid y, \mu \sim \text{Gamma}\left(\frac{1}{2} + a, \frac{1}{2}(y-\mu)^2 + b\right)$$
 
-4. Suppose that we choose the following hyperparameters for our prior distributions---$m = 0, v = 1, a = 1, b = 1$---and that we observe $y = 2$. Write code to implement this Gibbs Sampler.
-
-**ANSWER:** 
+Suppose that we choose the following hyperparameters for our prior distributions---$m = 0, v = 1, a = 1, b = 1$---and that we observe $y = 2$. We can implement this Gibbs Sampler using the following code.
 
 ```{r gibbs-setup, echo = T}
 # set up priors
@@ -347,18 +356,29 @@ for(i in 2:N){
 }
 ```
 
-5. Look at a histogram of your posterior samples for $\mu, \gamma$ and $\sigma^2 = \frac{1}{\gamma}$.
+Next we can look at a histogram of our posterior samples for $\mu, \gamma$ and $\sigma^2 = \frac{1}{\gamma}$. This shows what values of our parameters we sampled the most in our chain, and if we superimposed the posterior distribution, we would see the plausibility represented on these histograms are proportional to the plausibility of the real posteriors. 
 
-**ANSWER:**
-
-```{r histograms, echo = T, fig.height = 3}
+```{r histograms, echo = F, fig.height = 3}
 par(mfrow=c(1,3))
 hist(mus, xlab = expression(mu), main = '')
 hist(gams, xlab = expression(gamma), main = '')
 hist(1/gams, xlab = expression(paste(sigma^2,'=',1/gamma)), main = '')
 ```
 
-6. Estimate the posterior mean and median of $\mu$.
+Next we create a *trace plot* to show the behavior of the samples over the $N$ iterations.
+
+
+```{r trace-plots, echo = F, fig.height = 3}
+iterations <- 1:N
+par(mfrow=c(1,3))
+plot(mus ~ iterations, xlab = 'Iteration', ylab = expression(mu), type = 'l')
+plot(gams ~ iterations, xlab = 'Iteration', ylab = expression(gamma), type = 'l')
+plot(1/gams ~ iterations, xlab = 'Iteration', ylab = expression(sigma^2), type = 'l')
+```
+
+Trace plots show the values from which the algorithm sampled from by iteration. It's like a tour around the different values of our parameters where we spend most time visiting values that are more plausible in our posterior. Successful trace plots cover the range of values in our distributions. It is important that trace plots are not stuck on one value, otherwise the distribution will not be accurate. Trace plots can best be described as a tour of a neighborhood. One does not want to be stuck in one location. To get the correct distribution, the markov chain should spend the most time in the locations that are most plausible. 
+
+Next, once we have evaluated whether our approximate distribution is proportional to our posterior we can estimate different measurements to understand better our target posterior. In this case we calculate the mean and median of $\mu$.
 
 **ANSWER:**
 
@@ -370,27 +390,13 @@ median(mus)
 ```
 
 
-7. Create a *trace plot* showing the behavior of the samples over the $N$ iterations.
-
-**ANSWER:**
-
-```{r trace-plots, echo = T, fig.height = 3}
-iterations <- 1:N
-par(mfrow=c(1,3))
-plot(mus ~ iterations, xlab = 'Iteration', ylab = expression(mu), type = 'l')
-plot(gams ~ iterations, xlab = 'Iteration', ylab = expression(gamma), type = 'l')
-plot(1/gams ~ iterations, xlab = 'Iteration', ylab = expression(sigma^2), type = 'l')
-```
-
-Successful trace plots cover the range of values in our distributions. It is important that trace plots are not stuck on one value, otherwise the distribution will not be accurate. Trace plots can best be described as a tour of a neighborhood. One does not want to be stuck in one location. To get the correct distribution, the markov chain should spend the most time in the locations that are most common. 
-
 As mentioned above, in practice we usually pick a burn-in period of initial iterations to remove. This decision is often motivated by the fact that, depending on your choice of starting value, it may take awhile for your chain of samples to look like it is "mixing" well. Play around with your choice of starting value above to see if you can find situations in which a burn-in period might be helpful. 
 
 ##Discussion
 
 ### Gibbs Sampling vs Hamiltonian Sampling
 
-One of the most difficult aspects in Gibbs sampling is finding the conditional distributions for our parameters. If for the Normal-Normal example previously explained, it was difficult to work with 2 unknown parameters, it's clear that working with more than two unknown parameters would be even more troublesome. Additionally, sampling from more than 2 different conditional distributions and alternating between them makes the computation for this algorithm highly expensive. Because of efficiency, people have started opting for Hamiltonian sampling instead. This is reflected on the discussion on whether to use the RSTAN or RJAGS packages, where RSTAN employs a Hamiltonian algorithm and RJAGS uses a Gibbs algorithm. When comparing both algorithms model specification matters. Furthermore, RJAGS performs better when we use conjugate priors while RSTAN performs better when we have a non-centered specification and partly and non-conjugate models. RSTAN tends to be better at exploring complicated posterior distributions while RJAGS can be very fast for problems with specific characteristics. Overall, RSTAN provides the best performance [@Bolstad].
+One of the most difficult aspects in Gibbs sampling is finding the conditional distributions for our parameters. As shown in the Normal-Normal example previously explained, it was difficult to work with 2 unknown parameters, it's clear that working with more than two unknown parameters would be even more troublesome. Additionally, sampling from more than 2 different conditional distributions and alternating between them makes the computation for this algorithm highly expensive. Because of efficiency, people have started opting for Hamiltonian sampling instead. This is reflected on the discussion on whether to use the RSTAN or RJAGS packages, where RSTAN employs a Hamiltonian algorithm and RJAGS uses a Gibbs algorithm. When comparing both algorithms model specification matters. Furthermore, RJAGS performs better when we use conjugate priors while RSTAN performs better when we have a non-centered specification and partly and non-conjugate models. RSTAN tends to be better at exploring complicated posterior distributions while RJAGS can be very fast for problems with specific characteristics. Overall, RSTAN provides the best performance [@Bolstad].
 
 
 ### Real World Application
@@ -414,11 +420,12 @@ We adopt a Bayesian approach by specifying models priors $Pr(Z)$ and $Pr(P)$ for
 
 Having observed the genotypes (X), our knowledge of Z and P is given by the posterior distribution 
 
-$$Pr(Z,P\mid X) \propto Pr(Z) Pr(P)Pr(X\mid Z,P)$$ (1)
+$$Pr(Z,P\mid X) \propto Pr(Z) Pr(P)Pr(X\mid Z,P)$$ 
 
 Where $Pr(Z)$ and $Pr(P)$ are the priors and $Pr(X\mid Z,P)$ is the likelihood function of a genotype given a population and allele frequency. 
 
-We can't compute this distribution exactly but we can obtain an approximate sample $(Z^{(1)},P^{(1)}),(Z^{(2)},P^{(2)}), ...,(Z^{(M)},P^{(M)})$ from $Pr(Z,P\mid X)$ using Gibbs Sampling. Inference for Z and P may be based on summary statistics obtained from this sample. We will focus on a simpler model where each person is assumed to have originated in a single population. 
+We can't compute this distribution exactly but we can obtain an approximate sample $$(Z^{(1)},P^{(1)}),(Z^{(2)},P^{(2)}), ...,(Z^{(M)},P^{(M)})$$
+from $Pr(Z,P\mid X)$ using Gibbs Sampling. Inference for Z and P may be based on summary statistics obtained from this sample. We will focus on a simpler model where each person is assumed to have originated in a single population. 
 
 Suppose we sample N individuals with paired chromosomes (diploid). We assume each individual originates in one of K populations, each with its own characteristic set of allele frequencies. We will use the vectors X (observed genotypes), Z (populations of origin of the individuals), and P (the unknown allele frequencies in the populations). These vectors consist of the following elements. 
 
@@ -455,13 +462,15 @@ which are composed by a combination of the data $f(X \mid Z,P)$ and the priors $
 Starting with the initial value $Z^{(0)}$ for Z (chosen randomly) we iterate over the following steps for m=1,2,....
 
 Step 1. Sample $P^{(m)}$ from $Pr(P \mid X,Z^{(m-1)})$
+
+
 Step 2. Sample $Z^{(m)}$ from $Pr(Z \mid X,P^{(m)})$
 
 In step 1 we are estimating allele frequencies for each population given our sampled genotype and assuming that the population of origin of each individual is known. In step 2 we estimate the population of origin of each individual, given our sampled genotype and assuming that the population's allele frequencies are known. For sufficiently large m and c, $(Z^{(m)}, P^{(m)}), (Z^{(m+c)}, P^{(m+c)}),(Z^{(m+2c)}, P^{(m+2c)}),...$ will be approximately independent random samples from our posterior $Pr(Z,P \mid X)$.  
 
 ## Conclusion 
 
-Gibbs sampling is a distribution approximation method suitable for problems were we are trying to estimate more than one parameter. It's a variation of the Metropolis-Hastings algorithm were we sample alternatively from conditional distributions until we approximate our posterior. Like other MCMC methods, it's based on the idea of creating chains of values, where for each chain we sample from models dependent on the value of the previous chain. Computationally it's more efficient when we work with conjugate priors; however, overall there has been a greater preference for Hamiltonian software algorithms that are suitable for more complex models. Gibbs sampling is the best choice in specific conditions that are portrayed by the genetics application described earlier, where we have a conjugate Dirichlet prior, and where working with one parameter at a time is considerably easier.  
+Gibbs sampling is a distribution approximation method suitable for problems where we are trying to estimate more than one parameter. It's a variation of the Metropolis-Hastings algorithm. We sample alternatively from conditional distributions until we approximate our posterior. Like other MCMC methods, it's based on the idea of creating chains of values, where for each chain we sample from models dependent on the value of the previous chain. Computationally, it's more efficient when we work with conjugate priors; however, overall there has been a greater preference for Hamiltonian software algorithms that are suitable for more complex models. Gibbs sampling is the best choice in specific conditions, like in the genetics example described earlier, it is suitable when we have a conjugate Dirichlet prior, and when working with one parameter at a time.  
 
 
 
