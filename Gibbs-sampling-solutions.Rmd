@@ -1,9 +1,9 @@
 ---
 title: "Gibss-sampling-Activity-Solution"
 output:
+  pdf_document: default
   html_document:
     df_print: paged
-  pdf_document: default
 bibliography: Library.bib
 ---
 
@@ -128,12 +128,14 @@ $$\gamma \sim \text{Gamma}(a,b)$$
 
 1. Write down the joint posterior distribution for $\mu, \gamma$. Does this look like a recognizable probability distribution?
 
-**ANSWER:** 
+**ANSWER:** No, this is not a recognizable posterior:
 
 $$
 \begin{aligned}
 g(\mu,\gamma \mid y) & \propto f(y \mid \mu, \gamma) f(\mu, \gamma) \\
-& = \dots \\
+& = f(y \mid \mu, \gamma) f(\mu) f(\gamma), \text{ since } \mu, \gamma \text{ independent} \\
+& = \left[(2\pi)^{-\frac{1}{2}}\gamma^{\frac{1}{2}}e^{-\frac{1}{2}\gamma(y - \mu)^2} \right] \left[(2\pi v)^{-\frac{1}{2}}e^{-\frac{1}{2v}(\mu - m)^2} \right]\left[\frac{b^a}{\Gamma(a)} \gamma^{a-1}e^{-b\gamma}\right]\\
+& \propto \gamma^{\frac{1}{2}}e^{-\frac{1}{2}\gamma(y - \mu)^2}e^{-\frac{1}{2v}(\mu - m)^2}\gamma^{a-1}e^{-b\gamma}\\
 & =\gamma^{\frac{1}{2} + a - 1}e^{-\frac{1}{2}\gamma(y - \mu)^2 + -\frac{1}{2v}(\mu - m)^2 -b\gamma} \\
 & = \gamma^{\frac{1}{2} + a - 1}e^{-\frac{1}{2}\left[\gamma(y - \mu)^2 + \frac{1}{v}(\mu - m)^2 + 2b\gamma\right]} \\
 & = \gamma^{\frac{1}{2} + a - 1}e^{-\frac{1}{2}\left[\gamma y^2 - 2\mu y \gamma + \gamma \mu^2 + \mu^2 / v - 2m \mu / v + m^2 / v + 2 b \gamma\right]} \\
@@ -158,12 +160,13 @@ It turns out that the resulting $\mu^{(0)}, \mu^{(1)}, \dots, \mu^{(N)}$ and $\g
 
 2. Show that the conditional distributions $g(\mu \mid y, \gamma), g(\gamma \mid y, \mu)$ are proportional to $f(y \mid \mu, \gamma)f(\mu), f(y \mid \mu,\gamma)f(\gamma)$, respectively, as stated above.
 
-**ANSWER:**
 $$
 \begin{aligned}
 g(\mu \mid y, \gamma) &= \frac{f(\mu, y, \gamma)}{f(y, \gamma)} \\
 & \propto f(\mu, y, \gamma), \text{ since } f(y, \gamma) \text{ doesn't depend on } \mu \\
-& = \dots \\
+& = f(y \mid \mu, \gamma) f(\mu, \gamma) \\
+& = f(y \mid \mu, \gamma) f(\mu) f(\gamma), \text{ since } \mu, \gamma \text{ independent} \\
+& \propto f(y \mid \mu, \gamma) f(\mu), \text{ since} f(\gamma) \text{ doesn't depend on } \mu
 \end{aligned}
 $$
 
@@ -173,22 +176,25 @@ $$
 
 **ANSWER:**
 
-$$
-\begin{aligned}
-g(\mu \mid y, \gamma) &\propto f(y \mid \mu, \gamma)f(\mu) \\
-&= \left[(2\pi)^{-\frac{1}{2}}\gamma^{\frac{1}{2}}e^{-\frac{1}{2}\gamma(y - \mu)^2} \right] \left[(2\pi v)^{-\frac{1}{2}}e^{-\frac{1}{2v}(\mu - m)^2} \right]\\
-& \propto e^{-\frac{1}{2}\gamma(y - \mu)^2 -\frac{1}{2v}(\mu - m)^2} \\
-& = e^{-\frac{1}{2}\gamma(y^2 - 2\mu y + \mu^2) -\frac{1}{2v}(\mu^2 - 2\mu m + m^2)} \\
-& \propto e^{-\frac{1}{2}\gamma(- 2\mu y + \mu^2) -\frac{1}{2v}(\mu^2 - 2\mu m)} \\
-& \propto e^{-\frac{1}{2}[\gamma(- 2\mu y + \mu^2) -\frac{1}{v}(\mu^2 - 2\mu m)}\\
-& \propto e^{-\frac{1}{2}[- 2\gamma\mu y + \gamma\mu^2) -\frac{1}{v}\mu^2 - \frac{1}{v}2\mu m)}\\
-& \propto e^{-\frac{1}{2}[\mu^2(\gamma + \frac{1}{v}) -2\mu - [y\gamma+\frac{m}{v}] }\\
+$$g(\mu \mid y, \gamma) \propto f(y \mid \mu, \gamma)f(\mu)$$
 
-& = e^{-\frac{1}{2}\left[\mu^2(\gamma + \frac{1}{v}) - 2\mu(y \gamma + \frac{m}{v})  \right]} \\
-& = e^{-\frac{1}{2}(\gamma + \frac{1}{v})\left[\mu^2 - 2\mu \left(\frac{y \gamma + \frac{m}{v}}{\gamma + \frac{1}{v}}\right)  \right]} \\
-& \propto e^{-\frac{1}{2}(\gamma + \frac{1}{v})\left[\mu^2 - 2\mu\left(\frac{y \gamma + \frac{m}{v}}{\gamma + \frac{1}{v}}\right) + \left(\frac{y \gamma + \frac{m}{v}}{\gamma + \frac{1}{v}}\right)^2 \right]} \\
-\textbf{because of inverse proportionality}& \propto e^{-\frac{1}{2\left(\gamma + \frac{1}{v}\right)^{-1}}\left[ \mu - \left(\frac{y \gamma + \frac{m}{v}}{\gamma + \frac{1}{v}}\right) \right]^2}
-\end{aligned}\\$$
+
+$$= \left[(2\pi)^{-\frac{1}{2}}\gamma^{\frac{1}{2}}e^{-\frac{1}{2}\gamma(y - \mu)^2} \right] \left[(2\pi v)^{-\frac{1}{2}}e^{-\frac{1}{2v}(\mu - m)^2} \right]$$
+$$ \propto e^{-\frac{1}{2}\gamma(y - \mu)^2 -\frac{1}{2v}(\mu - m)^2}$$
+$$ = e^{-\frac{1}{2}\gamma(y^2 - 2\mu y + \mu^2) -\frac{1}{2v}(\mu^2 - 2\mu m + m^2)}$$
+$$ \propto e^{-\frac{1}{2}\gamma(- 2\mu y + \mu^2) -\frac{1}{2v}(\mu^2 - 2\mu m)} $$
+$$ \propto e^{-\frac{1}{2}[\gamma(- 2\mu y + \mu^2) -\frac{1}{v}(\mu^2 - 2\mu m)]}$$
+$$ \propto e^{-\frac{1}{2}[- 2\gamma\mu y + \gamma\mu^2) -\frac{1}{v}\mu^2 - \frac{1}{v}2\mu m)]}$$
+$$\propto e^{-\frac{1}{2}[\mu^2(\gamma + \frac{1}{v}) -2\mu - [y\gamma+\frac{m}{v}] }$$
+
+$$= e^{-\frac{1}{2}\left[\mu^2(\gamma + \frac{1}{v}) - 2\mu(y \gamma + \frac{m}{v})  \right]} $$
+$$= e^{-\frac{1}{2}(\gamma + \frac{1}{v})\left[\mu^2 - 2\mu \left(\frac{y \gamma + \frac{m}{v}}{\gamma + \frac{1}{v}}\right)  \right]} $$
+$$\propto e^{-\frac{1}{2}(\gamma + \frac{1}{v})\left[\mu^2 - 2\mu\left(\frac{y \gamma + \frac{m}{v}}{\gamma + \frac{1}{v}}\right) + \left(\frac{y \gamma + \frac{m}{v}}{\gamma + \frac{1}{v}}\right)^2 \right]} $$
+$$\text{because of inverse proportionality} \propto e^{-\frac{1}{2\left(\gamma + \frac{1}{v}\right)^{-1}}\left[ \mu - \left(\frac{y \gamma + \frac{m}{v}}{\gamma + \frac{1}{v}}\right) \right]^2}$$
+
+
+
+
 
 $$\implies \mu \mid y, \gamma \sim N\left(\frac{y\gamma + \frac{m}{v}}{\gamma + \frac{1}{v}}, \left[\gamma + \frac{1}{v} \right]^{-1}\right)$$
 

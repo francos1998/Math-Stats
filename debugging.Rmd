@@ -1,0 +1,23 @@
+---
+title: "Untitled"
+output: pdf_document
+---
+
+$$g(\mu \mid y, \gamma) \propto f(y \mid \mu, \gamma)f(\mu)$$
+
+
+$$= \left[(2\pi)^{-\frac{1}{2}}\gamma^{\frac{1}{2}}e^{-\frac{1}{2}\gamma(y - \mu)^2} \right] \left[(2\pi v)^{-\frac{1}{2}}e^{-\frac{1}{2v}(\mu - m)^2} \right]$$
+$$ \propto e^{-\frac{1}{2}\gamma(y - \mu)^2 -\frac{1}{2v}(\mu - m)^2}$$
+$$ = e^{-\frac{1}{2}\gamma(y^2 - 2\mu y + \mu^2) -\frac{1}{2v}(\mu^2 - 2\mu m + m^2)}$$
+$$ \propto e^{-\frac{1}{2}\gamma(- 2\mu y + \mu^2) -\frac{1}{2v}(\mu^2 - 2\mu m)} $$
+$$ \propto e^{-\frac{1}{2}[\gamma(- 2\mu y + \mu^2) -\frac{1}{v}(\mu^2 - 2\mu m)]}$$
+$$ \propto e^{-\frac{1}{2}[- 2\gamma\mu y + \gamma\mu^2) -\frac{1}{v}\mu^2 - \frac{1}{v}2\mu m)]}$$
+$$\propto e^{-\frac{1}{2}[\mu^2(\gamma + \frac{1}{v}) -2\mu - [y\gamma+\frac{m}{v}] }$$
+
+$$= e^{-\frac{1}{2}\left[\mu^2(\gamma + \frac{1}{v}) - 2\mu(y \gamma + \frac{m}{v})  \right]} $$
+$$= e^{-\frac{1}{2}(\gamma + \frac{1}{v})\left[\mu^2 - 2\mu \left(\frac{y \gamma + \frac{m}{v}}{\gamma + \frac{1}{v}}\right)  \right]} $$
+$$\propto e^{-\frac{1}{2}(\gamma + \frac{1}{v})\left[\mu^2 - 2\mu\left(\frac{y \gamma + \frac{m}{v}}{\gamma + \frac{1}{v}}\right) + \left(\frac{y \gamma + \frac{m}{v}}{\gamma + \frac{1}{v}}\right)^2 \right]} $$
+$$\text{because of inverse proportionality} \propto e^{-\frac{1}{2\left(\gamma + \frac{1}{v}\right)^{-1}}\left[ \mu - \left(\frac{y \gamma + \frac{m}{v}}{\gamma + \frac{1}{v}}\right) \right]^2}$$
+
+
+
