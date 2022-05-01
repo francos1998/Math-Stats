@@ -182,7 +182,7 @@ There are special cases of the Metropolis-Hastings that involve a different samp
 Example from [Youtube](https://www.youtube.com/watch?v=ER3DDBFzH2g)
 
 We start with an example of two random variables $x, y$ with a Bernoulli distribution. 
-We now find their conditional distributions
+We now find their conditional distributions. This process is a simplified version of what is done in all forms of Gibbs Sampling. By understanding the steps below, one will be able to understand the concepts behind more complex distributions.
 
 $$P(x|y = 0) \in P(x=1) = \frac{4}{5} \space , P(x = 0) = \frac{1}{5} $$
 
