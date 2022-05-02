@@ -108,7 +108,8 @@ As these graphs illustrate, a change in our prior beliefs will affect the poster
 ## Monte Carlo
 Monte Carlo simulations randomly sample points within a region to approximate a distribution. The example below is a simple illustration of a uniform distribution for an estimate for $\pi$. This samples the proportion of points within the square region that fall within the circle's bounds. The proportion would be equal to $\frac{\pi}{4}$ since we are only interested in one fourth of the circle. As we sample more, our estimation for $\pi$ gets closer to the actual distribution. This is due to the Central Limit Theorem. Monte Carlo simulations work well when the posterior distribution is easy to sample from. However, it is not always possible to sample from the posterior distribution, nor is it always efficient. 
 
-![an image caption Source: From Towards Data Science an Overview of Monte Carlo](MC.png)
+![an image caption Source: From Towards Data Science an Overview of Monte Carlo](MC.png){width=50%}
+
 This image illustrates a Monte Carlo simulation of 1/4 of circle to sample for $\pi$ [@Pease]. It is important to note some of the key qualities in this simulation. As n increases, the more accurate our simulation becomes. It is also important that the area that we are sampling from is known and easy to sample from. One reason we use MCMC sampling is because our distribution is hard to sample from. 
 
 
@@ -200,7 +201,7 @@ We now find their conditional distributions. This process is a simplified versio
 $$P(x|y = 0) \in P(x=1) = \frac{4}{5} \space , P(x = 0) = \frac{1}{5} $$
 
 $$P(x|y = 1) \in P(x=1) = \frac{2}{5} \space , P(x = 0) = \frac{3}{5} $$
-$$P(y|x = 0) \in P(B=1) = \frac{3}{4} \space , P(y = 0) = \frac{1}{4} $$
+$$P(y|x = 0) \in P(y=1) = \frac{3}{4} \space , P(y = 0) = \frac{1}{4} $$
 
 $$P(y|x = 1) \in P(y=1) = \frac{1}{3} \space , P(y = 0) = \frac{2}{3} $$
 
@@ -275,21 +276,22 @@ $$
 A similar argument can be used to show $g(\gamma \mid y, \mu) \propto f(y | \mu, \gamma) f(\gamma)$.
 
 
-
 Next we can use this result to show that $\mu \mid y, \gamma \sim N\left(\frac{y\gamma + \frac{m}{v}}{\gamma + \frac{1}{v}}, \left[\gamma + \frac{1}{v} \right]^{-1}\right)$ and $\gamma \mid y, \mu \sim \text{Gamma}\left(\frac{1}{2} + a, \frac{1}{2}(y-\mu)^2 + b\right)$.
 
-$$
-\begin{aligned}
-g(\mu \mid y, \gamma) &\propto f(y \mid \mu, \gamma)f(\mu) \\
-&= \left[(2\pi)^{-\frac{1}{2}}\gamma^{\frac{1}{2}}e^{-\frac{1}{2}\gamma(y - \mu)^2} \right] \left[(2\pi v)^{-\frac{1}{2}}e^{-\frac{1}{2v}(\mu - m)^2} \right]\\
-& \propto e^{-\frac{1}{2}\gamma(y - \mu)^2 -\frac{1}{2v}(\mu - m)^2} \\
-& = e^{-\frac{1}{2}\gamma(y^2 - 2\mu y + \mu^2) -\frac{1}{2v}(\mu^2 - 2\mu m + m^2)} \\
-& \propto e^{-\frac{1}{2}\gamma(- 2\mu y + \mu^2) -\frac{1}{2v}(\mu^2 - 2\mu m)} \\
-& = e^{-\frac{1}{2}\left[\mu^2(\gamma + \frac{1}{v}) - 2\mu(y \gamma + \frac{m}{v})  \right]} \\
-& = e^{-\frac{1}{2}(\gamma + \frac{1}{v})\left[\mu^2 - 2\mu \left(\frac{y \gamma + \frac{m}{v}}{\gamma + \frac{1}{v}}\right)  \right]} \\
-& \propto e^{-\frac{1}{2}(\gamma + \frac{1}{v})\left[\mu^2 - 2\mu\left(\frac{y \gamma + \frac{m}{v}}{\gamma + \frac{1}{v}}\right) + \left(\frac{y \gamma + \frac{m}{v}}{\gamma + \frac{1}{v}}\right)^2 \right]} \\
-& = \propto e^{-\frac{1}{2\left(\gamma + \frac{1}{v}\right)^{-1}}\left[ \mu - \left(\frac{y \gamma + \frac{m}{v}}{\gamma + \frac{1}{v}}\right) \right]^2}
-\end{aligned}$$
+
+$$g(\mu \mid y, \gamma) \propto f(y \mid \mu, \gamma)f(\mu)$$
+
+
+$$= \left[(2\pi)^{-\frac{1}{2}}\gamma^{\frac{1}{2}}e^{-\frac{1}{2}\gamma(y - \mu)^2} \right] \left[(2\pi v)^{-\frac{1}{2}}e^{-\frac{1}{2v}(\mu - m)^2} \right]$$
+$$ \propto e^{-\frac{1}{2}\gamma(y - \mu)^2 -\frac{1}{2v}(\mu - m)^2}$$
+$$ = e^{-\frac{1}{2}\gamma(y^2 - 2\mu y + \mu^2) -\frac{1}{2v}(\mu^2 - 2\mu m + m^2)}$$
+$$ \propto e^{-\frac{1}{2}\gamma(- 2\mu y + \mu^2) -\frac{1}{2v}(\mu^2 - 2\mu m)} $$
+$$ \propto e^{-\frac{1}{2}[\gamma(- 2\mu y + \mu^2) +\frac{1}{v}(\mu^2 - 2\mu m)]}$$
+$$ = e^{-\frac{1}{2}[- 2\gamma\mu y + \gamma\mu^2 +\frac{1}{v}\mu^2 - \frac{1}{v}2\mu m)]}$$
+$$= e^{-\frac{1}{2}\left[\mu^2(\gamma + \frac{1}{v}) - 2\mu(y \gamma + \frac{m}{v})  \right]} $$
+$$= e^{-\frac{1}{2}(\gamma + \frac{1}{v})\left[\mu^2 - 2\mu \left(\frac{y \gamma + \frac{m}{v}}{\gamma + \frac{1}{v}}\right)  \right]} $$
+$$\propto e^{-\frac{1}{2}(\gamma + \frac{1}{v})\left[\mu^2 - 2\mu\left(\frac{y \gamma + \frac{m}{v}}{\gamma + \frac{1}{v}}\right) + \left(\frac{y \gamma + \frac{m}{v}}{\gamma + \frac{1}{v}}\right)^2 \right]} $$
+$$\text{because of inverse proportionality} \propto e^{-\frac{1}{2\left(\gamma + \frac{1}{v}\right)^{-1}}\left[ \mu - \left(\frac{y \gamma + \frac{m}{v}}{\gamma + \frac{1}{v}}\right) \right]^2}$$
 
 $$\implies \mu \mid y, \gamma \sim N\left(\frac{y\gamma + \frac{m}{v}}{\gamma + \frac{1}{v}}, \left[\gamma + \frac{1}{v} \right]^{-1}\right)$$
 
@@ -338,14 +340,14 @@ N <- 1000
 # run through Gibbs Sampling for a total of N iterations
 for(i in 2:N){
   # update mu
-  m1 <- y*gam + m/v
-  m2 <- gam + 1/v
-  mu <- rnorm(n = 1, mean = (m1)/(m2), sd = sqrt(1/m2))
+  numerator_for_mu <- y*gam + m/v
+  denominator_for_mu <- gam + 1/v
+  mu <- rnorm(n = 1, mean = (numerator_for_mu)/(denominator_for_mu), sd = sqrt(1/denominator_for_mu))
   
   # update gamma
-  g1 <- 0.5 + a
-  g2 <- 0.5*(y-mu)^2 + b
-  gam <- rgamma(n = 1, shape = g1, rate = g2)
+  alpha <- 0.5 + a
+  beta <- 0.5*(y-mu)^2 + b
+  gam <- rgamma(n = 1, shape = alpha, rate = beta)
   
   # store new samples
   mus[i] <- mu
